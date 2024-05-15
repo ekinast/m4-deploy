@@ -5,10 +5,18 @@ import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
+import { UsersRepository } from './users/users.repository';
+import { ProductsRepository } from './products/products.repository';
 
 @Module({
   imports: [],
   controllers: [ProductsController, UsersController, AuthController],
-  providers: [ProductsService, UsersService, AuthService],
+  providers: [
+    ProductsService,
+    UsersService,
+    AuthService,
+    UsersRepository,
+    ProductsRepository,
+  ],
 })
 export class AppModule {}

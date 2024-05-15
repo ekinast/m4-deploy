@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  getUsers(): string {
-    return 'This action returns all users';
+  constructor(private usersRepository: UsersRepository) {}
+  getUsers() {
+    return this.usersRepository.getUsers();
   }
 }
