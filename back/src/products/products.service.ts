@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ProductsRepository } from './products.repository';
 
 @Injectable()
 export class ProductsService {
-  getProducts(): string {
-    return 'This action returns all products';
+  constructor(private productsRepository: ProductsRepository) {}
+  getProducts() {
+    return this.productsRepository.getProducts();
   }
 }
