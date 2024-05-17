@@ -1,4 +1,5 @@
-export class UserDTO {
+export class UserDTO_Id {
+  id: number;
   email: string;
   name: string;
   password: string;
@@ -8,6 +9,7 @@ export class UserDTO {
   city?: string | undefined;
 
   constructor(
+    id: number,
     email: string,
     name: string,
     password: string,
@@ -16,6 +18,7 @@ export class UserDTO {
     country?: string,
     city?: string,
   ) {
+    this.id = id;
     this.email = email;
     this.name = name;
     this.password = password;
@@ -25,4 +28,4 @@ export class UserDTO {
     this.city = city;
   }
 }
-// Path: src/DTOs/UserDTO.ts
+// Path: src/DTOs/UserDTO_Id.ts

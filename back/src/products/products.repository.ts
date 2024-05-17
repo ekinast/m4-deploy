@@ -48,5 +48,27 @@ export class ProductsRepository {
   async getProducts() {
     return this.products;
   }
+
+  private id = 4;
+
+  createProduct(product: ProductDTO) {
+    const newProduct: ProductDTO = { id: this.id, ...product };
+    this.products.push(newProduct);
+    newProduct.id = ++this.id;
+    return newProduct.id;
+  }
+
+  updateProduct(id: number, product: ProductDTO) {
+    const index = this.products.findIndex((product) => product.id === id);
+    this.products[index] = product;
+    return product.id;
+  }
+
+  deleteProduct(id: number) {
+    const index = this.products.findIndex((product) => product.id === id);
+    const product = this.products[index];
+    this.products.splice(index, 1);
+    return product.id;
+  }
 }
 // Path: src/products/products.repository.ts
