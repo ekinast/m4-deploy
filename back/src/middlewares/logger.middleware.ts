@@ -1,3 +1,4 @@
+// Pourpose: Middleware para registrar en consola la ruta y el método HTTP de cada petición
 import { Request, Response, NextFunction } from 'express';
 
 export function LoggerGlobal(req: Request, res: Response, next: NextFunction) {
