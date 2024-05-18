@@ -7,7 +7,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { UsersRepository } from './users/users.repository';
 import { ProductsRepository } from './products/products.repository';
-import { AuthInterceptor } from './interceptors/auth/auth.interceptor';
+import { PasswordInterceptor } from './interceptors/password/password.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PurchaseOrderController } from './purchase-order/purchase-order.controller';
 
@@ -22,7 +22,7 @@ import { PurchaseOrderController } from './purchase-order/purchase-order.control
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: AuthInterceptor,
+      useClass: PasswordInterceptor,
     },
     ProductsService,
     UsersService,

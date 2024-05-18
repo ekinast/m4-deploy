@@ -1,3 +1,4 @@
+// Pourpose: Interceptor para eliminar la propiedad "password" de los datos de respuesta
 import {
   CallHandler,
   ExecutionContext,
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class AuthInterceptor implements NestInterceptor {
+export class PasswordInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {

@@ -1,4 +1,4 @@
-import { AuthInterceptor } from './auth.interceptor';
+import { AuthInterceptor } from './password.interceptor';
 
 describe('AuthInterceptor', () => {
   it('should be defined', () => {
