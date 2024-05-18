@@ -9,10 +9,16 @@ import { UsersRepository } from './users/users.repository';
 import { ProductsRepository } from './products/products.repository';
 import { AuthInterceptor } from './interceptors/auth/auth.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { PurchaseOrderController } from './purchase-order/purchase-order.controller';
 
 @Module({
   imports: [],
-  controllers: [ProductsController, UsersController, AuthController],
+  controllers: [
+    ProductsController,
+    UsersController,
+    AuthController,
+    PurchaseOrderController,
+  ],
   providers: [
     {
       provide: APP_INTERCEPTOR,
