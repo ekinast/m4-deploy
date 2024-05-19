@@ -1,7 +1,7 @@
-import { AuthInterceptor } from './password.interceptor';
+import { PasswordInterceptor } from './password.interceptor';
 
-describe('AuthInterceptor', () => {
+describe('PasswordInterceptor', () => {
   it('should be defined', () => {
-    expect(new AuthInterceptor()).toBeDefined();
+    expect(new PasswordInterceptor()).toBeDefined();
   });
 });
