@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
+//import { Host } from '@nestjs/common/interfaces/host.interface';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -8,6 +9,12 @@ export class AuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers['authorization'];
+
+    // if (host.getType() === 'http') {
+    //   console.log('Request:', request);
+    //   console.log('Headers:', request.headers);
+    //   console.log('Authorization header:', authHeader);
+    // }
 
     if (!authHeader) {
       return false;
@@ -24,7 +31,7 @@ export class AuthGuard implements CanActivate {
     );
     //console.log('Decoded credentials:', credentials);
 
-    // Aquí continua la lógica de validación de credenciales si es necesario
+    // Aquí continua la lógica de validación de credenciales
 
     return true;
   }
