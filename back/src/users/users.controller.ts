@@ -11,43 +11,61 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserDTO_Id } from '../DTOs/UserDTO_Id';
 import { AuthGuard } from '../auth/auth.guards';
+import { UsersDBService } from './usersDB.service';
+import { User } from './users.entity';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly usersDBService: UsersDBService,
+  ) {
     console.log('UsersController instantiated');
   }
   @Get()
   @UseGuards(AuthGuard)
-  getUsers(@Query('page') page: number = 1, @Query('limit') limit: number = 5) {
-    return this.usersService.getUsers(page, limit);
+  async getUsers(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 5,
+  ) {
+    const allUsers: User[] = await this.usersDBService.getUsers(page, limit);
+    return allUsers;
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
-  getUserById(@Param('id') id: string) {
-    return this.usersService.getUserById(Number(id));
+  async getUserById(@Param('id') id: string) {
+    console.log('id:', id);
+
+    const user = await this.usersDBService.getUserById(id);
+    if (!user) {
+      return {
+        error: 'No se encontró el usuario.',
+      };
+    }
+    return user;
   }
 
   @Post()
   @HttpCode(201)
-  createUser(@Body() user: UserDTO_Id) {
-    return this.usersService.createUser(user);
+  async createUser(@Body() user: User) {
+    return this.usersDBService.saveUser(user);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  updateUser(@Param('id') id: string, @Body() user: UserDTO_Id) {
-    return this.usersService.updateUser(Number(id), user);
+  async updateUser(@Param('id') id: string, @Body() user: User) {
+    console.log('id:', id);
+
+    return this.usersDBService.updateUser(id, user);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  deleteUser(@Param('id') id: string) {
-    return this.usersService.deleteUser(Number(id));
+  async deleteUser(@Param('id') id: string) {
+    return this.usersDBService.deleteUser(id);
   }
 }

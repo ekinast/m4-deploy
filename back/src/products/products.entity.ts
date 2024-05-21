@@ -1,4 +1,6 @@
-// Pourpose: Define the entity for the products table
+// Pourpose: Entity for products table
+import { Category } from './categories/categories.entity';
+import { OrderDetails } from 'src/orders/details/orderDetails.entity';
 import {
   Column,
   Entity,
@@ -7,8 +9,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Category } from '../products/categories/categories.entity';
-import { OrderDetails } from 'src/orders/details/orderDetails.entity';
 
 @Entity({
   name: 'products',
@@ -32,7 +32,7 @@ export class Product {
   @Column({ nullable: true, default: 'default_image_url' })
   imgUrl: string;
 
-  @ManyToOne(() => Category, (category) => category.product)
+  @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
   @ManyToMany(() => OrderDetails)

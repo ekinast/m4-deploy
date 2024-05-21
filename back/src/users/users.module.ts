@@ -6,9 +6,12 @@ import { UsersRepository } from './users.repository';
 import { AuthGuard } from 'src/auth/auth.guards';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PasswordInterceptor } from 'src/interceptors/password/password.interceptor';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users.entity';
+import { UsersDBService } from './usersDB.service';
 
 @Module({
-  imports: [],
+  imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
   providers: [
     {
@@ -17,6 +20,7 @@ import { PasswordInterceptor } from 'src/interceptors/password/password.intercep
     },
     UsersService,
     UsersRepository,
+    UsersDBService,
     {
       provide: 'APP_GUARD',
       useClass: AuthGuard,

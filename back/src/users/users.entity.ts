@@ -12,13 +12,13 @@ export class User {
   @Column({ length: 50, nullable: false })
   name: string;
 
-  @Column({ length: 50, nullable: false })
+  @Column({ length: 50, nullable: false, unique: true })
   email: string;
 
   @Column({ length: 20, nullable: false })
   password: string;
 
-  @Column()
+  @Column({ type: 'bigint' })
   phone: number;
 
   @Column({ length: 50 })

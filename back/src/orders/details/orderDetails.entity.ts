@@ -1,11 +1,13 @@
-import { User } from 'src/users/users.entity';
+import { Product } from 'src/products/products.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
-  OneToMany,
+  Column,
+  ManyToMany,
 } from 'typeorm';
+import { Order } from '../orders.entity';
 
 @Entity({
   name: 'order_details',
@@ -14,10 +16,16 @@ export class OrderDetails {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToMany(() => User, (user) => user.orders)
-  users: User[];
+  @Column('decimal', { precision: 10, scale: 2, nullable: false })
+  price: number;
 
-  @OneToOne(() => OrderDetails)
+  @OneToOne(() => Order)
   @JoinColumn()
-  orderDetails: OrderDetails;
+  order: Order;
+
+  @ManyToMany(() => Product, (product) => product.orderDetails)
+  product: Product[];
+
+  @Column('int', { nullable: false })
+  quantity: number;
 }
