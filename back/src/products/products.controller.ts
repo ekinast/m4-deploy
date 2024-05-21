@@ -7,45 +7,56 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ProductsService } from './products.service';
-import { ProductDTO } from 'src/DTOs/ProductDTO';
+import { ProductsDBService } from './productsDB.service';
+import { Product } from './products.entity';
 import { AuthGuard } from 'src/auth/auth.guards';
 
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {
+  constructor(private readonly productsDBService: ProductsDBService) {
     console.log('ProductsController instantiated');
   }
   @Get()
-  getProducts() {
-    return this.productsService.getProducts();
+  getProducts(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 5,
+  ) {
+    return this.productsDBService.getProducts(page, limit);
   }
 
   @Get(':id')
   getProductById(@Param('id') id: string) {
-    return this.productsService.getProductById(Number(id));
+    return this.productsDBService.getProductById(id);
   }
 
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(201)
-  createProduct(@Body() product: ProductDTO) {
-    return this.productsService.createProduct(product);
+  createProduct(@Body() product: Product) {
+    return this.productsDBService.createProduct(product);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  updateProduct(@Param('id') id: string, @Body() product: ProductDTO) {
-    return this.productsService.updateProduct(Number(id), product);
+  updateProduct(@Param('id') id: string, @Body() product: Product) {
+    return this.productsDBService.updateProduct(id, product);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
   deleteProduct(@Param('id') id: string) {
-    return this.productsService.deleteProduct(Number(id));
+    return this.productsDBService.deleteProduct(id);
+  }
+
+  @Post('seeder')
+  @UseGuards(AuthGuard)
+  @HttpCode(201)
+  createProductSeeder(@Body() product: Product) {
+    return this.productsDBService.createProduct(product);
   }
 }
