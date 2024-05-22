@@ -10,7 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+//import { UsersService } from './users.service';
 import { AuthGuard } from '../auth/auth.guards';
 import { UsersDBService } from './usersDB.service';
 import { User } from './users.entity';
@@ -18,7 +18,7 @@ import { User } from './users.entity';
 @Controller('users')
 export class UsersController {
   constructor(
-    private readonly usersService: UsersService,
+    //private readonly usersService: UsersService,
     private readonly usersDBService: UsersDBService,
   ) {
     console.log('UsersController instantiated');

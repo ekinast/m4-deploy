@@ -28,8 +28,7 @@ export class ProductsController {
       page,
       limit,
     );
-    return;
-    allProducts;
+    return allProducts;
   }
 
   @Get(':id')
@@ -65,9 +64,8 @@ export class ProductsController {
   }
 
   @Post('seeder')
-  @UseGuards(AuthGuard)
   @HttpCode(201)
-  createProductSeeder(@Body() product: Product) {
-    return this.productsDBService.createProduct(product);
+  async seedProducts() {
+    return this.productsDBService.addProductsSeeder();
   }
 }

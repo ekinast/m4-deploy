@@ -37,7 +37,6 @@ export class UsersDBService {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
 
-    // Verificar si el número de teléfono es válido
     const phoneValidation = VerifyPhoneService(updatedUserData as User);
     if (phoneValidation.error) {
       throw new BadRequestException(phoneValidation.error);
@@ -46,7 +45,6 @@ export class UsersDBService {
     // Merge de datos: copiar las propiedades actualizadas al usuario existente
     Object.assign(oldUser, updatedUserData);
 
-    // Guardar los cambios en la base de datos
     const updatedUser = await this.usersRepository.save(oldUser);
 
     // Retornar el usuario actualizado
