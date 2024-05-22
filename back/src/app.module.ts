@@ -9,6 +9,7 @@ import { Product } from './products/products.entity';
 import { Order } from './orders/orders.entity';
 import { OrderDetails } from './orders/details/orderDetails.entity';
 import { AuthsModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { AuthsModule } from './auth/auth.module';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         entities: [User, Category, Product, Order, OrderDetails],
-        dropSchema: true,
+        //dropSchema: true,
         synchronize: true,
         logging: true,
       }),
@@ -34,6 +35,7 @@ import { AuthsModule } from './auth/auth.module';
     UsersModule,
     ProductsModule,
     AuthsModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],
