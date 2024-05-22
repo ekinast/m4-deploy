@@ -1,5 +1,5 @@
 // Pourpose: Entity for products table
-import { Category } from './categories/categories.entity';
+import { Category } from '../categories/categories.entity';
 import { OrderDetails } from 'src/orders/details/orderDetails.entity';
 import {
   Column,
@@ -10,9 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity({
-  name: 'products',
-})
+@Entity({ name: 'products' })
 export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;

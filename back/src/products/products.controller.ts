@@ -20,36 +20,47 @@ export class ProductsController {
     console.log('ProductsController instantiated');
   }
   @Get()
-  getProducts(
+  async getProducts(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
   ) {
-    return this.productsDBService.getProducts(page, limit);
+    const allProducts: Product[] = await this.productsDBService.getProducts(
+      page,
+      limit,
+    );
+    return;
+    allProducts;
   }
 
   @Get(':id')
-  getProductById(@Param('id') id: string) {
-    return this.productsDBService.getProductById(id);
+  async getProductById(@Param('id') id: string) {
+    const product = await this.productsDBService.getProductById(id);
+    if (!product) {
+      return {
+        error: 'No se encontró el producto.',
+      };
+    }
+    return product;
   }
 
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(201)
-  createProduct(@Body() product: Product) {
+  async createProduct(@Body() product: Product) {
     return this.productsDBService.createProduct(product);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  updateProduct(@Param('id') id: string, @Body() product: Product) {
+  async updateProduct(@Param('id') id: string, @Body() product: Product) {
     return this.productsDBService.updateProduct(id, product);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  deleteProduct(@Param('id') id: string) {
+  async deleteProduct(@Param('id') id: string) {
     return this.productsDBService.deleteProduct(id);
   }
 

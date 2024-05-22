@@ -3,7 +3,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Category } from './products/categories/categories.entity';
+import { Category } from './categories/categories.entity';
 import { User } from './users/users.entity';
 import { Product } from './products/products.entity';
 import { Order } from './orders/orders.entity';
@@ -22,7 +22,7 @@ import { AuthsModule } from './auth/auth.module';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         entities: [User, Category, Product, Order, OrderDetails],
-        //dropSchema: true,
+        dropSchema: true,
         synchronize: true,
         logging: true,
       }),
