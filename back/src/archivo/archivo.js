@@ -1,4 +1,6 @@
-[
+// Pourpose: This file contains the data that will be used to populate the database
+
+export const data = [
   {
     name: 'Iphone 15',
     description: 'The best smartphone in the world',
