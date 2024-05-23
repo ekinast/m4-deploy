@@ -19,6 +19,7 @@ export class ProductsController {
   constructor(private readonly productsDBService: ProductsDBService) {
     console.log('ProductsController instantiated');
   }
+
   @Get()
   async getProducts(
     @Query('page') page: number = 1,
