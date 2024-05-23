@@ -41,8 +41,8 @@ export class CategoriesController {
 
   @Post()
   @HttpCode(201)
-  async createCategory(@Body() category: Category) {
-    return this.categoriesDBService.createCategory(category);
+  async addCategory(@Body() category: Category) {
+    return this.categoriesDBService.addCategory(category);
   }
 
   @Post('seeder')
@@ -53,7 +53,12 @@ export class CategoriesController {
       { name: 'monitor' },
       { name: 'keyboard' },
       { name: 'mouse' },
-    ];
+    ].map((data) => {
+      const category = new Category();
+      category.name = data.name;
+      category.products = [];
+      return category;
+    });
 
     return this.categoriesDBService.createCategorySeeds(categories);
   }

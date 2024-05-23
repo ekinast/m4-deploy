@@ -15,7 +15,11 @@ export class UsersDBService {
   ) {}
 
   async getUsers(page: number, limit: number) {
-    return this.usersRepository.find();
+    const skippedItems = (page - 1) * limit;
+    return this.usersRepository.find({
+      skip: skippedItems,
+      take: limit,
+    });
   }
 
   async getUserById(id: string) {

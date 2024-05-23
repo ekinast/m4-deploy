@@ -11,14 +11,21 @@ export class CategoriesDBService {
   ) {}
 
   async getCategories(page: number, limit: number): Promise<Category[]> {
-    return this.categoriesRepository.find();
+    const skippedItems = (page - 1) * limit;
+    return this.categoriesRepository.find({
+      skip: skippedItems,
+      take: limit,
+    });
   }
 
   async getCategoryById(id: string): Promise<Category> {
     return this.categoriesRepository.findOneBy({ id: id });
   }
 
-  async createCategory(category: Category): Promise<Category> {
+  async addCategory(category: Category): Promise<Category> {
+    if (await this.categoryExists(category.name)) {
+      throw new Error(`La categoría ya existe: ${category.name}`);
+    }
     return this.categoriesRepository.save(category);
   }
 
@@ -53,14 +60,36 @@ export class CategoriesDBService {
     return 'Categoría eliminada correctamente';
   }
 
-  async createCategorySeeds(categories: any[]): Promise<Category[]> {
+  async createCategorySeeds(categories: Category[]): Promise<Category[]> {
     if (!categories || categories.length === 0) {
-      throw new Error('No categories provided');
+      throw new Error('No se proveyeron categorías');
     }
+
+    // Crear un array para almacenar las categorías únicas
+    const uniqueCategories: Category[] = [];
+
+    // Verificar cada categoría individualmente y añadir las que no existen
+    for (const category of categories) {
+      const exists = await this.categoryExists(category.name);
+      if (!exists) {
+        uniqueCategories.push(category);
+      }
+    }
+
+    if (uniqueCategories.length === 0) {
+      throw new Error('All categories already exist');
+    }
+
     try {
-      return await this.categoriesRepository.save(categories);
+      // Guardar todas las categorías únicas en la base de datos
+      return await this.categoriesRepository.save(uniqueCategories);
     } catch (error) {
-      throw new Error(`Failed to create categories: ${error.message}`);
+      throw new Error(`Fallo al crear categorías: ${error.message}`);
     }
+  }
+
+  private async categoryExists(name: string): Promise<boolean> {
+    const count = await this.categoriesRepository.count({ where: { name } });
+    return count > 0;
   }
 }
