@@ -15,7 +15,6 @@ export class ProductsDBService {
 
   async getProducts(page: number, limit: number): Promise<Product[]> {
     const skippedItems = (page - 1) * limit;
-
     return this.productsRepository.find({
       skip: skippedItems,
       take: limit,
@@ -25,7 +24,12 @@ export class ProductsDBService {
   async getProductById(id: string) {
     return this.productsRepository.findOneBy({ id: id });
   }
-  async createProduct(product: Product) {
+
+  async createProduct(product) {
+    const category = await this.validateProduct(product);
+    if (!category) return 'Validation failed';
+
+    product.category = category;
     return this.productsRepository.save(product);
   }
 
@@ -39,10 +43,8 @@ export class ProductsDBService {
     // Merge de datos: copiar las propiedades actualizadas al usuario existente
     Object.assign(oldProduct, updatedProductData);
 
-    // Guardar los cambios en la base de datos
     const updatedProduct = await this.productsRepository.save(oldProduct);
 
-    // Retornar el usuario actualizado
     return updatedProduct;
   }
 
@@ -59,28 +61,44 @@ export class ProductsDBService {
   }
 
   async addProductsSeeder() {
-    const productsToSeed = data;
-    console.log('productsToSeed', productsToSeed);
-
-    const existingProducts = await this.productsRepository.find();
-    const filteredProducts = productsToSeed.filter(
-      (prod) => !existingProducts.some((p) => p.name === prod.name),
-    );
-
-    for (const product of filteredProducts) {
-      const category = await this.categoriesRepository.findOne({
-        where: { name: product.category },
+    for (const product of data) {
+      const exists = await this.productsRepository.findOne({
+        where: { name: product.name },
       });
-      if (category) {
-        const newProduct = this.productsRepository.create({
-          ...product,
-          category: category,
-        });
-        await this.productsRepository.save(newProduct);
-      } else {
-        console.error(`Category not found for product ${product.name}`);
+      if (!exists) {
+        const category = await this.validateProduct(product);
+        if (category) {
+          const newProduct = this.productsRepository.create({
+            ...product,
+            category: category,
+          });
+          await this.productsRepository.save(newProduct);
+        }
       }
     }
     return 'Products seeded';
+  }
+
+  async validateProduct(product) {
+    // Verificar si el producto ya existe
+    const existingProduct = await this.productsRepository.findOne({
+      where: { name: product.name },
+    });
+    if (existingProduct) {
+      console.error(`Product already exists: ${product.name}`);
+      return null;
+    }
+
+    // Verificar si la categoría existe
+    const category = await this.categoriesRepository.findOne({
+      where: { name: product.category },
+    });
+    if (!category) {
+      console.error(`Category not found for product ${product.name}`);
+      return null;
+    }
+
+    // Retornar la categoría si el producto es válido y la categoría existe
+    return category;
   }
 }
