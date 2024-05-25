@@ -1,5 +1,5 @@
 // Pourpase: Entity for the user table
-import { Order } from 'src/orders/orders.entity';
+import { Order } from '../orders/entities/order.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({

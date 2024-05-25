@@ -1,3 +1,4 @@
+// Pourpose: Verify the credentials in the Authorization header
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
 //import { Host } from '@nestjs/common/interfaces/host.interface';
@@ -9,12 +10,6 @@ export class AuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers['authorization'];
-
-    // if (host.getType() === 'http') {
-    //   console.log('Request:', request);
-    //   console.log('Headers:', request.headers);
-    //   console.log('Authorization header:', authHeader);
-    // }
 
     if (!authHeader) {
       return false;

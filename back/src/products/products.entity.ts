@@ -1,6 +1,6 @@
 // Pourpose: Entity for products table
 import { Category } from '../categories/categories.entity';
-import { OrderDetails } from 'src/orders/details/orderDetails.entity';
+import { OrdersDetail } from '../orders-detail/entities/orders-detail.entity';
 import {
   Column,
   Entity,
@@ -33,7 +33,7 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
-  @ManyToMany(() => OrderDetails)
+  @ManyToMany(() => OrdersDetail)
   @JoinTable()
-  orderDetails: OrderDetails[];
+  ordersDetail: OrdersDetail[];
 }

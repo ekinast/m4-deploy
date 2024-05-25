@@ -1,6 +1,6 @@
 // Pourpose: Define the entity for the orders table
 import { User } from 'src/users/users.entity';
-import { OrderDetails } from './details/orderDetails.entity';
+import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
 import { Product } from 'src/products/products.entity';
 import {
   Column,
@@ -31,6 +31,6 @@ export class Order {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => OrderDetails)
-  orderDetails: OrderDetails;
+  @OneToOne(() => OrdersDetail)
+  ordersDetail: OrdersDetail;
 }

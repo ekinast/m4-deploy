@@ -26,5 +26,6 @@ import { UsersDBService } from './usersDB.service';
       useClass: AuthGuard,
     },
   ],
+  exports: [TypeOrmModule, UsersDBService],
 })
 export class UsersModule {}

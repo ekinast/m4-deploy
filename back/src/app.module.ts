@@ -3,39 +3,30 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Category } from './categories/categories.entity';
-import { User } from './users/users.entity';
-import { Product } from './products/products.entity';
-import { Order } from './orders/orders.entity';
-import { OrderDetails } from './orders/details/orderDetails.entity';
 import { AuthsModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
+import { OrdersModule } from './orders/orders.module';
+import { OrdersDetailModule } from './orders-detail/orders-detail.module';
+import typeOrmConfig from './config/typeorm';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        database: configService.get('DB_NAME'),
-        host: configService.get('DB_HOST'),
-        port: configService.get('DB_PORT'),
-        username: configService.get('DB_USER'),
-        password: configService.get('DB_PASSWORD'),
-        entities: [User, Category, Product, Order, OrderDetails],
-        //dropSchema: true,
-        synchronize: true,
-        logging: true,
-      }),
+      useFactory: (configService: ConfigService) =>
+        configService.get('typeorm'),
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './.env.development',
+      //envFilePath: './.env.development',
+      load: [typeOrmConfig],
     }),
     UsersModule,
     ProductsModule,
     AuthsModule,
     CategoriesModule,
+    OrdersModule,
+    OrdersDetailModule,
   ],
   controllers: [],
   providers: [],

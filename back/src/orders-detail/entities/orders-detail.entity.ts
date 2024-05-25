@@ -7,12 +7,12 @@ import {
   Column,
   ManyToMany,
 } from 'typeorm';
-import { Order } from '../orders.entity';
+import { Order } from '../../orders/entities/order.entity';
 
 @Entity({
-  name: 'order_details',
+  name: 'orders_detail',
 })
-export class OrderDetails {
+export class OrdersDetail {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -23,7 +23,7 @@ export class OrderDetails {
   @JoinColumn()
   order: Order;
 
-  @ManyToMany(() => Product, (product) => product.orderDetails)
+  @ManyToMany(() => Product, (product) => product.ordersDetail)
   product: Product[];
 
   @Column('int', { nullable: false })
