@@ -81,25 +81,20 @@ export class UsersRepository {
   signIn(body: any) {
     const { email, password } = body;
 
-    // Validar que se proporcionen tanto el email como la contraseña
     if (!email || !password) {
       return 'Email o password faltante';
     }
 
-    // Buscar un usuario con el email proporcionado
     const user = this.users.find((user) => user.email === email);
 
-    // Si no se encuentra un usuario con ese email, enviar un mensaje genérico
     if (!user) {
       return 'Email o password incorrectos';
     }
 
-    // Si la contraseña no coincide, enviar un mensaje genérico
     if (user.password !== password) {
       return 'Email o password incorrectos';
     }
 
-    // Si se llega hasta aquí, el login es exitoso, devolver el usuario
     return user;
   }
 }

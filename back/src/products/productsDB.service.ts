@@ -16,13 +16,17 @@ export class ProductsDBService {
   async getProducts(page: number, limit: number): Promise<Product[]> {
     const skippedItems = (page - 1) * limit;
     return this.productsRepository.find({
+      relations: ['category', 'ordersDetail'],
       skip: skippedItems,
       take: limit,
     });
   }
 
   async getProductById(id: string) {
-    return this.productsRepository.findOneBy({ id: id });
+    return this.productsRepository.findOne({
+      where: { id },
+      relations: ['category', 'ordersDetail'],
+    });
   }
 
   async createProduct(product) {
