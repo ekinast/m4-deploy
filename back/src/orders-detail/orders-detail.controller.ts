@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { OrdersDetailService } from './orders-detail.service';
-import { OrdersDetail } from './entities/orders-detail.entity';
+import { OrderDetail } from './entities/orders-detail.entity';
 
 @Controller('orders-detail')
 export class OrdersDetailController {
@@ -9,7 +9,7 @@ export class OrdersDetailController {
   }
 
   @Post()
-  async create(@Body() createOrdersDetail: OrdersDetail) {
+  async create(@Body() createOrdersDetail: OrderDetail) {
     return this.ordersDetailService.create(createOrdersDetail);
   }
 

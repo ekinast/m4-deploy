@@ -1,12 +1,13 @@
 // Pourpose: Entity for products table
 import { Category } from '../categories/categories.entity';
-import { OrdersDetail } from '../orders-detail/entities/orders-detail.entity';
+import { OrderDetail } from '../orders-detail/entities/orders-detail.entity';
 import {
   Column,
   Entity,
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -21,7 +22,16 @@ export class Product {
   @Column({ nullable: false })
   description: string;
 
-  @Column('decimal', { precision: 10, scale: 2, nullable: false })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
+  })
   price: number;
 
   @Column({ nullable: false })
@@ -33,7 +43,6 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
-  @ManyToMany(() => OrdersDetail)
-  @JoinTable()
-  ordersDetail: OrdersDetail[];
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
+  orderDetails: OrderDetail[];
 }
