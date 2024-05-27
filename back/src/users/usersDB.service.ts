@@ -23,7 +23,26 @@ export class UsersDBService {
   }
 
   async getUserById(id: string) {
-    return this.usersRepository.findOneBy({ id: id });
+    const user = await this.usersRepository.findOne({
+      where: { id: id },
+      relations: ['orders'],
+    });
+
+    if (user) {
+      // Transforma las órdenes para enviar solo id y fecha
+      const orders = user.orders.map((order) => ({
+        id: order.id,
+        date: order.createdAt, // Asumiendo que usas createdAt para la fecha de la orden
+      }));
+
+      return {
+        ...user,
+        orders: orders,
+      };
+    } else {
+      // Maneja el caso de que no se encuentre el usuario
+      return null;
+    }
   }
   async saveUser(user: User) {
     // Verificar si el número de teléfono es válido
