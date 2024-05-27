@@ -1,6 +1,6 @@
 // Pourpose: Define the entity for the orders table
 import { User } from 'src/users/users.entity';
-import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
+import { OrderDetail } from '../../orders-detail/entities/orders-detail.entity';
 import { Product } from 'src/products/products.entity';
 import {
   Column,
@@ -8,7 +8,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -31,6 +31,9 @@ export class Order {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => OrdersDetail)
-  ordersDetail: OrdersDetail;
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
+  orderDetails: OrderDetail[];
+
+  @Column('decimal', { precision: 10, scale: 2, nullable: false })
+  total: number;
 }

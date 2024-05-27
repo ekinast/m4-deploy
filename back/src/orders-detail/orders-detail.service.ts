@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrdersDetail } from './entities/orders-detail.entity';
+import { OrderDetail } from './entities/orders-detail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from 'src/orders/entities/order.entity';
 import { Repository } from 'typeorm';
@@ -8,13 +8,13 @@ import { Product } from 'src/products/products.entity';
 @Injectable()
 export class OrdersDetailService {
   constructor(
-    @InjectRepository(OrdersDetail)
-    private ordersDetailRepository: Repository<OrdersDetail>,
+    @InjectRepository(OrderDetail)
+    private ordersDetailRepository: Repository<OrderDetail>,
     @InjectRepository(Order) private ordersRepository: Repository<Order>,
     @InjectRepository(Product) private productsRepository: Repository<Product>,
   ) {}
 
-  create(createOrdersDetail: OrdersDetail) {
+  create(createOrdersDetail: OrderDetail) {
     return 'This action adds a new ordersDetail';
   }
 

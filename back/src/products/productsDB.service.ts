@@ -16,7 +16,7 @@ export class ProductsDBService {
   async getProducts(page: number, limit: number): Promise<Product[]> {
     const skippedItems = (page - 1) * limit;
     return this.productsRepository.find({
-      relations: ['category', 'ordersDetail'],
+      relations: ['category', 'orderDetails'],
       skip: skippedItems,
       take: limit,
     });
@@ -25,7 +25,7 @@ export class ProductsDBService {
   async getProductById(id: string) {
     return this.productsRepository.findOne({
       where: { id },
-      relations: ['category', 'ordersDetail'],
+      relations: ['category', 'orderDetails'],
     });
   }
 
@@ -64,7 +64,7 @@ export class ProductsDBService {
     return 'Producto eliminado correctamente';
   }
 
-  async addProductsSeeder() {
+  async addProductsSeeder(): Promise<Product[]> {
     for (const product of data) {
       const exists = await this.productsRepository.findOne({
         where: { name: product.name },
@@ -80,7 +80,7 @@ export class ProductsDBService {
         }
       }
     }
-    return 'Products seeded';
+    return this.productsRepository.find();
   }
 
   async validateProduct(product) {

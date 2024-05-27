@@ -5,14 +5,14 @@ export const data = [
     name: 'Iphone 15',
     description: 'The best smartphone in the world',
     price: 199.99,
-    stock: 12,
+    stock: 1200,
     category: 'smartphone',
   },
   {
     name: 'Samsung Galaxy S23',
     description: 'The best smartphone in the world',
     price: 150.0,
-    stock: 12,
+    stock: 1200,
     category: 'smartphone',
   },
   {

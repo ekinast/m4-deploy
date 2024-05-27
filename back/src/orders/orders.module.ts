@@ -11,13 +11,13 @@ import { UsersDBService } from 'src/users/usersDB.service';
 import { CategoriesDBService } from 'src/categories/categoriesDB.service';
 import { UsersModule } from 'src/users/users.module';
 import { OrdersDetailService } from 'src/orders-detail/orders-detail.service';
-import { OrdersDetail } from 'src/orders-detail/entities/orders-detail.entity';
+import { OrderDetail } from 'src/orders-detail/entities/orders-detail.entity';
 import { Category } from 'src/categories/categories.entity';
 import { User } from 'src/users/users.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Order, Product, OrdersDetail, Category, User]),
+    TypeOrmModule.forFeature([Order, Product, OrderDetail, Category, User]),
     ProductsModule,
     CategoriesModule,
     UsersModule,

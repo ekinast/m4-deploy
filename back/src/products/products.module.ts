@@ -6,11 +6,11 @@ import { Product } from './products.entity';
 import { CategoriesDBService } from 'src/categories/categoriesDB.service';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { Category } from 'src/categories/categories.entity';
-import { OrdersDetail } from 'src/orders-detail/entities/orders-detail.entity';
+import { OrderDetail } from 'src/orders-detail/entities/orders-detail.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Category, OrdersDetail]),
+    TypeOrmModule.forFeature([Product, Category, OrderDetail]),
     CategoriesModule,
   ],
   controllers: [ProductsController],
