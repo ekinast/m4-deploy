@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -29,7 +30,7 @@ export class OrdersService {
     private ordersDetailRepository: Repository<OrderDetail>,
   ) {}
 
-  async addOrder(addOrderDto: AddOrderDto): Promise<Order> {
+  async addOrder(addOrderDto: AddOrderDto): Promise<Partial<Order>> {
     // Valido usuario
     const user = await validateUser(this.usersDBService, addOrderDto.userId);
     if (!user) {
@@ -42,8 +43,6 @@ export class OrdersService {
       addOrderDto.products,
     );
 
-    console.log('products', products);
-
     if (products.length === 0) {
       throw new NotFoundException(
         'No se encontraron productos, orden cancelada',
@@ -52,10 +51,19 @@ export class OrdersService {
 
     // Crear la orden
     const order = new Order();
-    order.user = user;
+    order.userId = user.id;
     order.createdAt = new Date();
     order.updatedAt = new Date();
     order.total = 0; // Inicialización del total
+
+    // Primero guardar la orden para asegurar que tenga un ID
+    try {
+      await this.ordersRepository.save(order);
+      console.log('Order saved', order);
+    } catch (error) {
+      console.error('Failed to save order', error);
+      return; // Regresar o manejar el error adecuadamente
+    }
 
     let total = 0;
     const orderDetails: OrderDetail[] = [];
@@ -68,8 +76,6 @@ export class OrdersService {
         orderDetail.product = product;
         orderDetail.price = product.price;
         total += product.price;
-        console.log('total', total);
-        console.log('orderDetail', orderDetail);
 
         // Reducir stock
         product.stock -= 1;
@@ -79,9 +85,11 @@ export class OrdersService {
         try {
           await this.ordersDetailRepository.save(orderDetail);
           orderDetails.push(orderDetail);
-          console.log('orderDetails saved', orderDetails);
         } catch (error) {
           console.error('Failed to save orderDetail', error);
+          throw new InternalServerErrorException(
+            'Error al guardar los detalles de la orden',
+          );
         }
       } else {
         throw new BadRequestException(
@@ -92,22 +100,26 @@ export class OrdersService {
 
     // Asignar total a la orden y guardar
     order.total = total;
-    await this.ordersRepository.save(order);
-
-    // Recargar la orden con todas las relaciones
-    const completeOrder = await this.ordersRepository.findOne({
-      where: { id: order.id },
-      relations: ['user', 'products', 'orderDetails', 'orderDetails.product'],
-    });
-
-    return completeOrder;
+    try {
+      const newOrder = await this.ordersRepository.save(order);
+      return {
+        id: order.id,
+        total: order.total,
+      };
+    } catch (error) {
+      console.error('Failed to save order', error);
+      throw new InternalServerErrorException('Error al guardar la orden final');
+    }
   }
 
   findAll() {
     return `This action returns all orders`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  findOne(id: string) {
+    return this.ordersRepository.findOne({
+      where: { id: id },
+      relations: ['orderDetails', 'orderDetails.product'],
+    });
   }
 }

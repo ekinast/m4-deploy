@@ -1,12 +1,10 @@
 // Pourpose: Define the entity for the orders table
 import { User } from 'src/users/users.entity';
 import { OrderDetail } from '../../orders-detail/entities/orders-detail.entity';
-import { Product } from 'src/products/products.entity';
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -18,12 +16,12 @@ export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.orders)
-  user: User;
+  @Column({ nullable: false })
+  userId: string;
 
-  @ManyToMany(() => Product)
-  @JoinTable()
-  products: Product[];
+  @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -34,6 +32,14 @@ export class Order {
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
   orderDetails: OrderDetail[];
 
-  @Column('decimal', { precision: 10, scale: 2, nullable: false })
+  @Column('decimal', {
+    precision: 10,
+    scale: 2,
+    nullable: false,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
+  })
   total: number;
 }
