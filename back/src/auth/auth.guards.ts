@@ -24,9 +24,7 @@ export class AuthGuard implements CanActivate {
     const credentials = Buffer.from(credentialsBase64, 'base64').toString(
       'utf-8',
     );
-    //console.log('Decoded credentials:', credentials);
-
-    // Aquí continua la lógica de validación de credenciales
+    console.log('Decoded credentials:', credentials);
 
     return true;
   }

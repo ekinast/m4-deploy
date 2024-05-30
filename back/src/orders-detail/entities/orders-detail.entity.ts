@@ -1,5 +1,12 @@
 import { Product } from 'src/products/products.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
 
 @Entity({
@@ -23,6 +30,17 @@ export class OrderDetail {
   @ManyToOne(() => Order, (order) => order.orderDetails)
   order: Order;
 
-  @ManyToOne(() => Product, (product) => product.orderDetails)
-  product: Product;
+  @ManyToMany(() => Product)
+  @JoinTable({
+    name: 'order_details_products', // El nombre de la tabla de unión
+    joinColumn: {
+      name: 'orderDetailId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'productId',
+      referencedColumnName: 'id',
+    },
+  })
+  products: Product[];
 }

@@ -32,7 +32,7 @@ export class UsersDBService {
       // Transforma las órdenes para enviar solo id y fecha
       const orders = user.orders.map((order) => ({
         id: order.id,
-        date: order.createdAt, // Asumiendo que usas createdAt para la fecha de la orden
+        date: order.createdAt,
       }));
 
       return {

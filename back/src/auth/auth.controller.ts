@@ -1,10 +1,18 @@
-import { Controller, Get, Post, HttpCode, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  HttpCode,
+  Body,
+  HttpStatus,
+  NotFoundException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guards';
 
 @Controller('auth')
 export class AuthController {
-  //usersService: any;
-  //authService: any;
   constructor(private readonly authsService: AuthService) {
     console.log('AuthController instantiated');
   }
@@ -14,7 +22,8 @@ export class AuthController {
   }
 
   @Post('signin')
-  @HttpCode(200)
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   signIn(@Body() request: { email: string; password: string }) {
     return this.authsService.signIn(request);
   }

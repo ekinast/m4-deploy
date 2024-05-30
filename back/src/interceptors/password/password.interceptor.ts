@@ -25,6 +25,11 @@ export class PasswordInterceptor implements NestInterceptor {
   }
 
   private transformData(data: any): any {
+    // Verificar primero si los datos son null o undefined
+    if (!data) {
+      return data;
+    }
+
     // Verificar si los datos son un objeto y si tiene una propiedad "password"
     if (typeof data === 'object' && data.hasOwnProperty('password')) {
       // Clonar el objeto y eliminar la propiedad "password"
