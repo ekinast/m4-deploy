@@ -1,15 +1,32 @@
-import { Injectable } from '@nestjs/common';
-import { UsersRepository } from '../users/users.repository';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/users.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    @InjectRepository(User) private usersRepository: Repository<User>,
+  ) {}
 
   getAuth(): string {
     return 'This action returns all auth';
   }
 
-  signIn(body: any) {
-    return this.usersRepository.signIn(body);
+  async signIn(body: any) {
+    const { email, password } = body;
+
+    const user = await this.usersRepository.findOne({
+      where: { email: body.email },
+    });
+
+    if (!user || user.password !== password) {
+      throw new UnauthorizedException('Email o password incorrectos');
+    }
+    return user;
   }
 }

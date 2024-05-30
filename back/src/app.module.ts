@@ -18,7 +18,6 @@ import typeOrmConfig from './config/typeorm';
     }),
     ConfigModule.forRoot({
       isGlobal: true,
-      //envFilePath: './.env.development',
       load: [typeOrmConfig],
     }),
     UsersModule,

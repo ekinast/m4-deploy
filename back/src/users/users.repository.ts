@@ -81,6 +81,9 @@ export class UsersRepository {
   signIn(body: any) {
     const { email, password } = body;
 
+    console.log('Email:', email);
+    console.log('Password:', password);
+
     if (!email || !password) {
       return 'Email o password faltante';
     }

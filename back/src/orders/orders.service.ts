@@ -73,7 +73,7 @@ export class OrdersService {
       if (product && product.stock > 0) {
         const orderDetail = new OrderDetail();
         orderDetail.order = order;
-        orderDetail.product = product;
+        orderDetail.products = [product];
         orderDetail.price = product.price;
         total += product.price;
 
@@ -113,13 +113,13 @@ export class OrdersService {
   }
 
   findAll() {
-    return `This action returns all orders`;
+    return this.ordersRepository.find({ relations: ['orderDetails'] });
   }
 
   findOne(id: string) {
     return this.ordersRepository.findOne({
       where: { id: id },
-      relations: ['orderDetails', 'orderDetails.product'],
+      relations: ['orderDetails', 'orderDetails.products'],
     });
   }
 }
