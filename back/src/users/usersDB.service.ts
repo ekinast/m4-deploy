@@ -25,19 +25,23 @@ export class UsersDBService {
   async getUserById(id: string) {
     const user = await this.usersRepository.findOne({
       where: { id: id },
-      relations: ['orders'],
+      relations: [
+        'orders',
+        'orders.orderDetails',
+        //'orders.orderDetails.products',
+      ],
     });
 
     if (user) {
       // Transforma las órdenes para enviar solo id y fecha
-      const orders = user.orders.map((order) => ({
-        id: order.id,
-        date: order.createdAt,
-      }));
+      // const orders = user.orders.map((order) => ({
+      //   id: order.id,
+      //   date: order.createdAt,
+      // }));
 
       return {
         ...user,
-        orders: orders,
+        //orders: orders,
       };
     } else {
       // Maneja el caso de que no se encuentre el usuario

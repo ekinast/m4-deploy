@@ -16,6 +16,11 @@ import { validateUser, validateProducts } from './orderValidation.service';
 import { UsersDBService } from '../users/usersDB.service';
 import { ProductsDBService } from 'src/products/productsDB.service';
 
+type OrderResponse = {
+  id: string;
+  price: number;
+};
+
 @Injectable()
 export class OrdersService {
   constructor(
@@ -30,9 +35,12 @@ export class OrdersService {
     private ordersDetailRepository: Repository<OrderDetail>,
   ) {}
 
-  async addOrder(addOrderDto: AddOrderDto): Promise<Partial<Order>> {
+  async addOrder(addOrderDto: AddOrderDto): Promise<OrderResponse> {
     // Valido usuario
-    const user = await validateUser(this.usersDBService, addOrderDto.userId);
+    const user: User = await validateUser(
+      this.usersDBService,
+      addOrderDto.userId,
+    );
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
@@ -51,10 +59,8 @@ export class OrdersService {
 
     // Crear la orden
     const order = new Order();
-    order.userId = user.id;
+    order.user = user;
     order.createdAt = new Date();
-    order.updatedAt = new Date();
-    order.total = 0; // Inicialización del total
 
     // Primero guardar la orden para asegurar que tenga un ID
     try {
@@ -65,32 +71,20 @@ export class OrdersService {
       return; // Regresar o manejar el error adecuadamente
     }
 
-    let total = 0;
-    const orderDetails: OrderDetail[] = [];
+    const orderDetail = new OrderDetail(); // Crear un solo OrderDetail
+    orderDetail.order = order;
+    orderDetail.products = []; // Inicializar la lista de productos como un arreglo vacío
+    orderDetail.price = 0; // Inicializar el precio del OrderDetail
 
-    // Crear y guardar detalles de la orden para cada producto
+    // Añadir productos al OrderDetail
     for (const product of products) {
       if (product && product.stock > 0) {
-        const orderDetail = new OrderDetail();
-        orderDetail.order = order;
-        orderDetail.products = [product];
-        orderDetail.price = product.price;
-        total += product.price;
+        orderDetail.products.push(product); // Agregar producto al OrderDetail
+        orderDetail.price += product.price; // Acumular el precio en el OrderDetail
 
         // Reducir stock
         product.stock -= 1;
         await this.productsRepository.save(product);
-
-        // Guardar detalle de la orden
-        try {
-          await this.ordersDetailRepository.save(orderDetail);
-          orderDetails.push(orderDetail);
-        } catch (error) {
-          console.error('Failed to save orderDetail', error);
-          throw new InternalServerErrorException(
-            'Error al guardar los detalles de la orden',
-          );
-        }
       } else {
         throw new BadRequestException(
           `El producto ${product.name} no tiene stock.`,
@@ -98,18 +92,20 @@ export class OrdersService {
       }
     }
 
-    // Asignar total a la orden y guardar
-    order.total = total;
+    // Guardar el OrderDetail completo con todos los productos
     try {
-      const newOrder = await this.ordersRepository.save(order);
-      return {
-        id: order.id,
-        total: order.total,
-      };
+      await this.ordersDetailRepository.save(orderDetail);
     } catch (error) {
-      console.error('Failed to save order', error);
-      throw new InternalServerErrorException('Error al guardar la orden final');
+      console.error('Failed to save orderDetail', error);
+      throw new InternalServerErrorException(
+        'Error al guardar los detalles de la orden',
+      );
     }
+
+    return {
+      id: order.id,
+      price: orderDetail.price,
+    };
   }
 
   findAll() {

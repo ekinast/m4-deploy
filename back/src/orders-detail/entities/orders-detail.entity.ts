@@ -3,9 +3,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   ManyToMany,
   JoinTable,
+  OneToOne,
 } from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
 
@@ -27,7 +27,7 @@ export class OrderDetail {
   })
   price: number;
 
-  @ManyToOne(() => Order, (order) => order.orderDetails)
+  @OneToOne(() => Order, (order) => order.orderDetails)
   order: Order;
 
   @ManyToMany(() => Product)
