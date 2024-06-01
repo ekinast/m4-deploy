@@ -7,7 +7,7 @@ const VerifyPhoneService = (user: User): { error?: string } => {
 
     // Verificar si la cadena resultante solo contiene dígitos
     if (/^\d+$/.test(newPhone)) {
-      user.phone = Number(newPhone);
+      user.phone = newPhone;
     } else {
       return {
         error: 'El número de teléfono contiene caracteres no válidos.',

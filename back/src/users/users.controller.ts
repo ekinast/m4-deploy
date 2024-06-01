@@ -14,6 +14,7 @@ import {
 import { AuthGuard } from '../auth/auth.guards';
 import { UsersDBService } from './usersDB.service';
 import { User } from './users.entity';
+import { CreateUserDTO } from 'src/DTOs/CreateUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -47,17 +48,20 @@ export class UsersController {
 
   @Post()
   @HttpCode(201)
-  async createUser(@Body() user: User) {
-    return this.usersDBService.saveUser(user);
+  async createUser(@Body() createUserDTO: CreateUserDTO) {
+    return this.usersDBService.saveUser(createUserDTO);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  async updateUser(@Param('id') id: string, @Body() user: User) {
+  async updateUser(
+    @Param('id') id: string,
+    @Body() createUserDTO: CreateUserDTO,
+  ) {
     console.log('id:', id);
 
-    return this.usersDBService.updateUser(id, user);
+    return this.usersDBService.updateUser(id, createUserDTO);
   }
 
   @Delete(':id')
