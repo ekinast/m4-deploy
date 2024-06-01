@@ -6,7 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
-import VerifyPhoneService from './VerifyPhone.service';
+import { CreateUserDTO } from 'src/DTOs/CreateUser.dto';
+//import VerifyPhoneService from './VerifyPhone.service';
 
 @Injectable()
 export class UsersDBService {
@@ -33,12 +34,6 @@ export class UsersDBService {
     });
 
     if (user) {
-      // Transforma las órdenes para enviar solo id y fecha
-      // const orders = user.orders.map((order) => ({
-      //   id: order.id,
-      //   date: order.createdAt,
-      // }));
-
       return {
         ...user,
         //orders: orders,
@@ -48,13 +43,8 @@ export class UsersDBService {
       return null;
     }
   }
-  async saveUser(user: User) {
-    // Verificar si el número de teléfono es válido
-    const phoneValidation = VerifyPhoneService(user);
-    if (phoneValidation.error) {
-      throw new BadRequestException(phoneValidation.error);
-    }
-    return this.usersRepository.save(user);
+  async saveUser(createUserDTO: CreateUserDTO) {
+    return this.usersRepository.save(createUserDTO);
   }
 
   async updateUser(id: string, updatedUserData: Partial<User>) {
@@ -62,11 +52,6 @@ export class UsersDBService {
 
     if (!oldUser) {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
-    }
-
-    const phoneValidation = VerifyPhoneService(updatedUserData as User);
-    if (phoneValidation.error) {
-      throw new BadRequestException(phoneValidation.error);
     }
 
     // Merge de datos: copiar las propiedades actualizadas al usuario existente

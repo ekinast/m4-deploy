@@ -8,7 +8,7 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { AddOrderDto } from './dto/add-order.dto';
+import { CreateOrderDto } from './dto/CreateOrder.dto';
 import { AuthGuard } from 'src/auth/auth.guards';
 
 @Controller('orders')
@@ -20,8 +20,8 @@ export class OrdersController {
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(201)
-  async addOrder(@Body() addOrderDto: AddOrderDto) {
-    return this.ordersService.addOrder(addOrderDto);
+  async addOrder(@Body() createOrderDto: CreateOrderDto) {
+    return this.ordersService.addOrder(createOrderDto);
   }
 
   @Get()

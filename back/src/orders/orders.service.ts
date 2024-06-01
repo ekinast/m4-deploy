@@ -8,13 +8,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/products/products.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/categories/categories.entity';
-import { AddOrderDto } from './dto/add-order.dto';
 import { Order } from './entities/order.entity';
 import { User } from 'src/users/users.entity';
 import { OrderDetail } from 'src/orders-detail/entities/orders-detail.entity';
 import { validateUser, validateProducts } from './orderValidation.service';
 import { UsersDBService } from '../users/usersDB.service';
 import { ProductsDBService } from 'src/products/productsDB.service';
+import { CreateOrderDto } from './dto/CreateOrder.dto';
 
 type OrderResponse = {
   id: string;
@@ -35,11 +35,11 @@ export class OrdersService {
     private ordersDetailRepository: Repository<OrderDetail>,
   ) {}
 
-  async addOrder(addOrderDto: AddOrderDto): Promise<OrderResponse> {
+  async addOrder(createOrderDto: CreateOrderDto): Promise<OrderResponse> {
     // Valido usuario
     const user: User = await validateUser(
       this.usersDBService,
-      addOrderDto.userId,
+      createOrderDto.userId,
     );
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
@@ -48,7 +48,7 @@ export class OrdersService {
     // Valido productos
     const products = await validateProducts(
       this.productsDBService,
-      addOrderDto.products,
+      createOrderDto.products,
     );
 
     if (products.length === 0) {

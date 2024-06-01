@@ -19,7 +19,7 @@ export class User {
   password: string;
 
   @Column({ type: 'bigint' })
-  phone: number;
+  phone: string;
 
   @Column({ length: 50 })
   country: string;
