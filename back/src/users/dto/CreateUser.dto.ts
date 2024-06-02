@@ -1,7 +1,6 @@
 import {
   IsDate,
   IsEmail,
-  IsInt,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -60,10 +59,10 @@ export class CreateUserDTO {
   })
   city: string;
 
-  // @IsDate()
-  // createdAt: Date;
+  @IsDate()
+  createdAt: Date;
 
-  // constructor(createdAt: number) {
-  //   this.createdAt = new Date(createdAt);
-  // }
+  constructor(createdAt: number) {
+    this.createdAt = new Date(createdAt);
+  }
 }
