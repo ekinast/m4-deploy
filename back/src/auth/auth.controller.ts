@@ -5,11 +5,11 @@ import {
   HttpCode,
   Body,
   HttpStatus,
-  NotFoundException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guards';
+import { LoginUserDto } from './dto/LoginUser.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +24,8 @@ export class AuthController {
   @Post('signin')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  signIn(@Body() request: { email: string; password: string }) {
-    return this.authsService.signIn(request);
+  //signIn(@Body() request: { email: string; password: string }) {
+  signIn(@Body() loginUserDTO: LoginUserDto) {
+    return this.authsService.signIn(loginUserDTO);
   }
 }
