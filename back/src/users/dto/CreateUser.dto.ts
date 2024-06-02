@@ -1,12 +1,14 @@
 import {
-  IsArray,
   IsDate,
   IsEmail,
+  IsInt,
   IsNotEmpty,
-  IsPhoneNumber,
+  IsNumber,
   IsString,
   Length,
   Matches,
+  Max,
+  Min,
 } from 'class-validator';
 
 export class CreateUserDTO {
@@ -36,10 +38,12 @@ export class CreateUserDTO {
   @IsNotEmpty({
     message: 'El número de teléfono es obligatorio.',
   })
-  @IsPhoneNumber(null, {
-    message: 'El número de teléfono no es válido.',
+  @IsNumber({}, { message: 'El teléfono debe ser un número entero' })
+  @Min(1000000, { message: 'El teléfono debe tener al menos 7 dígitos' })
+  @Max(999999999999999, {
+    message: 'El teléfono debe tener como máximo 15 dígitos',
   })
-  phone: string;
+  phone?: number | undefined;
 
   @Length(5, 20, {
     message: 'El nombre del país debe tener entre 3 y 80 caracteres.',
@@ -56,6 +60,10 @@ export class CreateUserDTO {
   })
   city: string;
 
-  @IsDate()
-  createdAt: Date;
+  // @IsDate()
+  // createdAt: Date;
+
+  // constructor(createdAt: number) {
+  //   this.createdAt = new Date(createdAt);
+  // }
 }

@@ -13,7 +13,7 @@ import { UsersModule } from 'src/users/users.module';
 import { OrdersDetailService } from 'src/orders-detail/orders-detail.service';
 import { OrderDetail } from 'src/orders-detail/entities/orders-detail.entity';
 import { Category } from 'src/categories/categories.entity';
-import { User } from 'src/users/users.entity';
+import { User } from 'src/users/entities/users.entity';
 
 @Module({
   imports: [

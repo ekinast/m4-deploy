@@ -11,28 +11,20 @@ export class ProductPartialDto {
   @IsString()
   id: string;
 
-  @IsNotEmpty({
-    message: 'El nombre es obligatorio.',
-  })
+  @IsOptional()
   @IsString()
   name: string;
 
-  @IsNotEmpty({
-    message: 'La descripción es obligatoria.',
-  })
+  @IsOptional()
   @IsString()
   description?: string;
 
-  @IsNotEmpty({
-    message: 'El precio es obligatorio.',
-  })
+  @IsOptional()
   @IsNumber()
   @Min(0)
   price: number;
 
-  @IsNotEmpty({
-    message: 'El stock es obligatorio.',
-  })
+  @IsOptional()
   @IsNumber()
   @Min(0)
   stock: number;

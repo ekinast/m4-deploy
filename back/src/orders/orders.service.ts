@@ -9,12 +9,12 @@ import { Product } from 'src/products/products.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/categories/categories.entity';
 import { Order } from './entities/order.entity';
-import { User } from 'src/users/users.entity';
+import { User } from 'src/users/entities/users.entity';
 import { OrderDetail } from 'src/orders-detail/entities/orders-detail.entity';
 import { validateUser, validateProducts } from './orderValidation.service';
 import { UsersDBService } from '../users/usersDB.service';
 import { ProductsDBService } from 'src/products/productsDB.service';
-import { CreateOrderDto } from './dto/CreateOrder.dto';
+import { CreateOrderDto } from '../orders/dto/CreateOrder.dto';
 
 type OrderResponse = {
   id: string;

@@ -1,5 +1,5 @@
 // Pourpase: Entity for the user table
-import { Order } from '../orders/entities/order.entity';
+import { Order } from '../../orders/entities/order.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
@@ -19,7 +19,7 @@ export class User {
   password: string;
 
   @Column({ type: 'bigint' })
-  phone: string;
+  phone: number;
 
   @Column({ length: 50 })
   country: string;

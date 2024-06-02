@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/auth/auth.guards';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PasswordInterceptor } from 'src/interceptors/password/password.interceptor';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users.entity';
+import { User } from './entities/users.entity';
 import { UsersDBService } from './usersDB.service';
 
 @Module({

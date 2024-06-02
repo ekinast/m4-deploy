@@ -9,7 +9,7 @@ import { Product } from 'src/products/products.entity';
 import { OrdersModule } from 'src/orders/orders.module';
 import { ProductsModule } from 'src/products/products.module';
 import { OrderDetail } from './entities/orders-detail.entity';
-import { User } from 'src/users/users.entity';
+import { User } from 'src/users/entities/users.entity';
 import { UsersModule } from 'src/users/users.module';
 
 @Module({
