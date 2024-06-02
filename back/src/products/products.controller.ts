@@ -5,14 +5,20 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
   UseGuards,
+  UseInterceptors,
+  UsePipes,
 } from '@nestjs/common';
 import { ProductsDBService } from './productsDB.service';
-import { Product } from './products.entity';
+import { ProductDto } from './dto/Product.dto';
 import { AuthGuard } from 'src/auth/auth.guards';
+import { Product } from './products.entity';
+import { ParseCategoryPipe } from '../categories/parse-category.pipe';
+import { TransformCategoryInterceptor } from 'src/interceptors/transform-category.interceptor';
 
 @Controller('products')
 export class ProductsController {
@@ -33,7 +39,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async getProductById(@Param('id') id: string) {
+  async getProductById(@Param('id', new ParseUUIDPipe()) id: string) {
     const product = await this.productsDBService.getProductById(id);
     if (!product) {
       return {
@@ -46,21 +52,25 @@ export class ProductsController {
   @Post()
   @UseGuards(AuthGuard)
   @HttpCode(201)
-  async createProduct(@Body() product: Product) {
-    return this.productsDBService.createProduct(product);
+  @UseInterceptors(TransformCategoryInterceptor)
+  async createProduct(@Body() productDto: ProductDto) {
+    return this.productsDBService.createProduct(productDto);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  async updateProduct(@Param('id') id: string, @Body() product: Product) {
+  async updateProduct(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() product: ProductDto,
+  ) {
     return this.productsDBService.updateProduct(id, product);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
-  async deleteProduct(@Param('id') id: string) {
+  async deleteProduct(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.productsDBService.deleteProduct(id);
   }
 
