@@ -20,7 +20,6 @@ export async function validateProducts(
       const product: Product = await productsDBService.getProductById(
         productId.id,
       );
-
       return product;
     }),
   );

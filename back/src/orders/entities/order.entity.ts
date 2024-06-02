@@ -1,5 +1,5 @@
 // Pourpose: Define the entity for the orders table
-import { User } from 'src/users/users.entity';
+import { User } from 'src/users/entities/users.entity';
 import { OrderDetail } from '../../orders-detail/entities/orders-detail.entity';
 import {
   Column,

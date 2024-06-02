@@ -13,8 +13,8 @@ import {
 //import { UsersService } from './users.service';
 import { AuthGuard } from '../auth/auth.guards';
 import { UsersDBService } from './usersDB.service';
-import { User } from './users.entity';
-import { CreateUserDTO } from 'src/DTOs/CreateUser.dto';
+import { User } from './entities/users.entity';
+import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
 
 @Controller('users')
 export class UsersController {
@@ -59,8 +59,6 @@ export class UsersController {
     @Param('id') id: string,
     @Body() createUserDTO: CreateUserDTO,
   ) {
-    console.log('id:', id);
-
     return this.usersDBService.updateUser(id, createUserDTO);
   }
 

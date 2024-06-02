@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './users.entity';
+import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDTO } from 'src/DTOs/CreateUser.dto';
+import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
 //import VerifyPhoneService from './VerifyPhone.service';
 
 @Injectable()
