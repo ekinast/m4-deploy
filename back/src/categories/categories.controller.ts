@@ -6,11 +6,14 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
 import { CategoriesDBService } from './categoriesDB.service';
+import { CreateCategoryDTO } from './dto/CreateCategory.dto';
+import { UpdateCategoryDTO } from './dto/UpdateCategory.dto';
 import { Category } from './categories.entity';
 
 @Controller('categories')
@@ -41,8 +44,8 @@ export class CategoriesController {
 
   @Post()
   @HttpCode(201)
-  async addCategory(@Body() category: Category) {
-    return this.categoriesDBService.addCategory(category);
+  async createCategory(@Body() createCategoryDto: CreateCategoryDTO) {
+    return this.categoriesDBService.addCategory(createCategoryDto);
   }
 
   @Post('seeder')
@@ -65,10 +68,11 @@ export class CategoriesController {
 
   @Put(':id')
   @HttpCode(200)
-  async updateCategory(@Param('id') id: string, @Body() category: Category) {
-    console.log('id:', id);
-
-    return this.categoriesDBService.updateCategory(id, category);
+  async updateCategory(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateCategoryDto: UpdateCategoryDTO,
+  ) {
+    return this.categoriesDBService.updateCategory(id, updateCategoryDto);
   }
 
   @Delete(':id')

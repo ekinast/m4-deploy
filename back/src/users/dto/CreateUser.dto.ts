@@ -9,6 +9,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import { addMinutes } from 'date-fns';
 
 export class CreateUserDTO {
   @IsNotEmpty({ message: 'El nombre es obligatorio y no puede estar vacío.' })
@@ -62,7 +63,13 @@ export class CreateUserDTO {
   @IsDate()
   createdAt: Date;
 
-  constructor(createdAt: number) {
-    this.createdAt = new Date(createdAt);
+  constructor(createdAt?: number) {
+    this.createdAt = createdAt ? new Date(createdAt) : this.getLocalDate();
+  }
+
+  private getLocalDate(): Date {
+    const now = new Date();
+    const offsetInMinutes = now.getTimezoneOffset();
+    return addMinutes(now, -offsetInMinutes);
   }
 }

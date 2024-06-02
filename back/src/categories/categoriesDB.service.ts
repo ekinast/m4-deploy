@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './categories.entity';
 import { Repository } from 'typeorm';
+import { CreateCategoryDTO } from './dto/CreateCategory.dto';
 
 @Injectable()
 export class CategoriesDBService {
@@ -9,6 +10,10 @@ export class CategoriesDBService {
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
   ) {}
+
+  async findByName(name: string): Promise<Category> {
+    return this.categoriesRepository.findOne({ where: { name } });
+  }
 
   async getCategories(page: number, limit: number): Promise<Category[]> {
     const skippedItems = (page - 1) * limit;
@@ -22,9 +27,11 @@ export class CategoriesDBService {
     return this.categoriesRepository.findOneBy({ id: id });
   }
 
-  async addCategory(category: Category): Promise<Category> {
+  async addCategory(category: CreateCategoryDTO): Promise<Category> {
+    console.log('category.name', category.name);
+
     if (await this.categoryExists(category.name)) {
-      throw new Error(`La categoría ya existe: ${category.name}`);
+      throw new NotFoundException(`La categoría ya existe: ${category.name}`);
     }
     return this.categoriesRepository.save(category);
   }
@@ -62,7 +69,7 @@ export class CategoriesDBService {
 
   async createCategorySeeds(categories: Category[]): Promise<Category[]> {
     if (!categories || categories.length === 0) {
-      throw new Error('No se proveyeron categorías');
+      throw new NotFoundException('No se proveyeron categorías');
     }
 
     // Crear un array para almacenar las categorías únicas
@@ -77,14 +84,16 @@ export class CategoriesDBService {
     }
 
     if (uniqueCategories.length === 0) {
-      throw new Error('All categories already exist');
+      throw new NotFoundException('All categories already exist');
     }
 
     try {
       // Guardar todas las categorías únicas en la base de datos
       return await this.categoriesRepository.save(uniqueCategories);
     } catch (error) {
-      throw new Error(`Fallo al crear categorías: ${error.message}`);
+      throw new NotFoundException(
+        `Fallo al crear categorías: ${error.message}`,
+      );
     }
   }
 

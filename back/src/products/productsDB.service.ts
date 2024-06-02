@@ -4,6 +4,7 @@ import { Product } from './products.entity';
 import { Repository } from 'typeorm';
 import { Category } from 'src/categories/categories.entity';
 import { data } from '../archivo/archivo.js';
+import { ProductDto } from './dto/Product.dto';
 
 @Injectable()
 export class ProductsDBService {
@@ -29,15 +30,29 @@ export class ProductsDBService {
     });
   }
 
-  async createProduct(product) {
-    const category = await this.validateProduct(product);
-    if (!category) return 'Validation failed';
+  async createProduct(productDto: ProductDto): Promise<Product> {
+    const product = new Product();
+    product.name = productDto.name;
+    product.description = productDto.description;
+    product.price = productDto.price;
+    product.stock = productDto.stock;
+    product.imgUrl = productDto.imgUrl;
 
-    product.category = category;
+    if (productDto.category) {
+      const category = await this.categoriesRepository.findOne({
+        where: { id: productDto.category }, // Buscar por UUID
+      });
+
+      if (!category) {
+        throw new NotFoundException('Categoría no encontrada');
+      }
+      product.category = category;
+    }
+
     return this.productsRepository.save(product);
   }
 
-  async updateProduct(id: string, updatedProductData: Partial<Product>) {
+  async updateProduct(id: string, updatedProductData: Partial<ProductDto>) {
     const oldProduct = await this.productsRepository.findOneBy({ id: id });
 
     if (!oldProduct) {
@@ -89,8 +104,7 @@ export class ProductsDBService {
       where: { name: product.name },
     });
     if (existingProduct) {
-      console.error(`Product already exists: ${product.name}`);
-      return null;
+      throw new NotFoundException(`Product already exists: ${product.name}`);
     }
 
     // Verificar si la categoría existe
@@ -98,11 +112,16 @@ export class ProductsDBService {
       where: { name: product.category },
     });
     if (!category) {
-      console.error(`Category not found for product ${product.name}`);
-      return null;
+      throw new NotFoundException(
+        `Category not found for product ${product.name}`,
+      );
     }
 
     // Retornar la categoría si el producto es válido y la categoría existe
     return category;
+  }
+
+  async findByName(name: string): Promise<Category> {
+    return this.categoriesRepository.findOne({ where: { name } });
   }
 }

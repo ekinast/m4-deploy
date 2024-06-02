@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { LoggerGlobal } from './middlewares/logger.middleware';
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 // import { CategoriesController } from './categories/categories.controller';
 // import { ProductsController } from './products/products.controller';
 
@@ -10,6 +10,19 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
+      exceptionFactory: (errors) => {
+        const cleanErrors = errors.map((error) => {
+          return {
+            property: error.property,
+            constraints: Object.values(error.constraints),
+          };
+        });
+        return new BadRequestException({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: cleanErrors,
+        });
+      },
     }),
   );
   app.use(LoggerGlobal);
