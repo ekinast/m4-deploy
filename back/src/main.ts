@@ -18,6 +18,8 @@ async function bootstrap() {
           };
         });
         return new BadRequestException({
+          alert:
+            'Se ha detectado un error en la petición, por favor revise los datos enviados.',
           statusCode: 400,
           error: 'Bad Request',
           message: cleanErrors,
