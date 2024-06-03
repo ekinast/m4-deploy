@@ -11,18 +11,45 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       exceptionFactory: (errors) => {
-        const cleanErrors = errors.map((error) => {
-          return {
-            property: error.property,
-            constraints: Object.values(error.constraints),
-          };
-        });
+        const flattenValidationErrors = (validationErrors, parentPath = '') => {
+          const result = [];
+          validationErrors.forEach((error) => {
+            const propertyPath = parentPath
+              ? `${parentPath}.${error.property}`
+              : error.property;
+            if (error.constraints) {
+              result.push({
+                property: propertyPath,
+                constraints: Object.values(error.constraints),
+              });
+            }
+            if (error.children && error.children.length) {
+              result.push(
+                ...flattenValidationErrors(error.children, propertyPath),
+              );
+            }
+          });
+          return result;
+        };
+
+        const flattenedErrors = flattenValidationErrors(errors);
+
+        const formattedErrors = flattenedErrors
+          .map((e) => {
+            const propertyPath = e.property.replace(
+              /\.\d+/g,
+              (match) => `[${match.slice(1)}]`,
+            );
+            return `${propertyPath}: ${e.constraints.join(', ')}`;
+          })
+          .join('; ');
+
         return new BadRequestException({
           alert:
             'Se ha detectado un error en la petición, por favor revise los datos enviados.',
           statusCode: 400,
           error: 'Bad Request',
-          message: cleanErrors,
+          message: formattedErrors,
         });
       },
     }),

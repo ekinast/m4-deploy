@@ -4,11 +4,13 @@ import {
   Min,
   IsOptional,
   IsNotEmpty,
+  IsUUID,
 } from 'class-validator';
 
 export class ProductPartialDto {
   @IsNotEmpty()
   @IsString()
+  @IsUUID('4', { message: 'El ID debe ser un UUID de versión 4 válido' })
   id: string;
 
   @IsOptional()
@@ -29,7 +31,7 @@ export class ProductPartialDto {
   @Min(0)
   stock: number;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   imgUrl: string;
 }

@@ -14,6 +14,9 @@ import { OrdersDetailService } from 'src/orders-detail/orders-detail.service';
 import { OrderDetail } from 'src/orders-detail/entities/orders-detail.entity';
 import { Category } from 'src/categories/categories.entity';
 import { User } from 'src/users/entities/users.entity';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ErrorsInterceptor } from '../interceptors/errorsInterceptor';
+//import { ValidationErrorsInterceptor } from 'src/interceptors/validationsErrorInterceptor';
 
 @Module({
   imports: [
@@ -29,6 +32,11 @@ import { User } from 'src/users/entities/users.entity';
     UsersDBService,
     CategoriesDBService,
     OrdersDetailService,
+    {
+      provide: APP_INTERCEPTOR,
+      //useClass: ValidationErrorsInterceptor,
+      useClass: ErrorsInterceptor,
+    },
   ],
   exports: [TypeOrmModule, OrdersService],
 })

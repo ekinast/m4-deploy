@@ -10,6 +10,8 @@ import {
   Put,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 //import { UsersService } from './users.service';
 import { AuthGuard } from '../auth/auth.guards';
@@ -37,6 +39,7 @@ export class UsersController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
+  @UsePipes(new ValidationPipe({ transform: true }))
   async getUserById(@Param('id', new ParseUUIDPipe()) id: string) {
     const user = await this.usersDBService.getUserById(id);
     if (!user) {
@@ -49,6 +52,7 @@ export class UsersController {
 
   @Post()
   @HttpCode(201)
+  @UsePipes(new ValidationPipe({ transform: true }))
   async createUser(@Body() createUserDTO: CreateUserDTO) {
     return this.usersDBService.saveUser(createUserDTO);
   }
@@ -56,6 +60,7 @@ export class UsersController {
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
+  @UsePipes(new ValidationPipe({ transform: true }))
   async updateUser(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() createUserDTO: CreateUserDTO,

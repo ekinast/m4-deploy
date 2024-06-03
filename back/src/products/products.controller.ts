@@ -12,12 +12,12 @@ import {
   UseGuards,
   UseInterceptors,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductsDBService } from './productsDB.service';
 import { ProductDto } from './dto/Product.dto';
 import { AuthGuard } from 'src/auth/auth.guards';
 import { Product } from './products.entity';
-import { ParseCategoryPipe } from '../categories/parse-category.pipe';
 import { TransformCategoryInterceptor } from 'src/interceptors/transform-category.interceptor';
 
 @Controller('products')
@@ -60,6 +60,7 @@ export class ProductsController {
   @Put(':id')
   @UseGuards(AuthGuard)
   @HttpCode(200)
+  @UsePipes(new ValidationPipe({ transform: true }))
   async updateProduct(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() product: ProductDto,
