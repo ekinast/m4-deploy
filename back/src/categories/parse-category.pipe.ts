@@ -16,7 +16,7 @@ export class ParseCategoryPipe implements PipeTransform {
     }
 
     const category = await this.categoriesDBService.findByName(value.category);
-    console.log('Pasé por el pie de categoría', category);
+    console.log('Pasé por el pipe de categoría', category);
 
     if (!category) {
       throw new BadRequestException(`Category not found`);
