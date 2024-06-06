@@ -13,27 +13,34 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinSizeValidatorPipe } from 'src/pipes/min-size-validator.pipe';
+import { ProductsDBService } from 'src/products/productsDB.service';
+import { ProductDto } from 'src/products/dto/Product.dto';
 
 @Controller('files')
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    private readonly filesService: FilesService,
+    private readonly productsDBService: ProductsDBService,
+  ) {}
 
   //? Subir archivos a Cloudinay.
   @Post('uploadImage/:id')
   @UseInterceptors(FileInterceptor('image'))
   @UsePipes(MinSizeValidatorPipe)
-  putUserImages(
+  async putUserImages(
+    @Param('id', new ParseUUIDPipe()) id: string,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({
-            maxSize: 1000000,
+            maxSize: 100000,
             message: 'El archivo debe ser menor a 100kb',
           }),
           new FileTypeValidator({
@@ -45,7 +52,18 @@ export class FilesController {
     file: Express.Multer.File,
   ) {
     //console.log('file', file);
-    return this.filesService.uploadImage(file);
+    const myImg = await this.filesService.uploadImage(file);
+    const imgUrl = myImg.secure_url;
+    console.log('imgUrl', imgUrl);
+
+    const productDto: Partial<ProductDto> = {
+      imgUrl: imgUrl,
+    };
+    const updateProduct = await this.productsDBService.updateProduct(
+      id,
+      productDto,
+    );
+    return updateProduct;
     //return file;
   }
 
