@@ -11,6 +11,10 @@ export class MinSizeValidatorPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     const minSize = 10000;
 
+    if (!value) {
+      throw new BadRequestException('El archivo es requerido');
+    }
+
     if (value.size < minSize) {
       throw new BadRequestException('El tamaño del archivo es muy pequeño');
     }
