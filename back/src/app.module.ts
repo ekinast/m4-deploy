@@ -9,6 +9,7 @@ import { OrdersModule } from './orders/orders.module';
 import { OrdersDetailModule } from './orders-detail/orders-detail.module';
 import { FilesModule } from './files/files.module';
 import typeOrmConfig from './config/typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -28,6 +29,11 @@ import typeOrmConfig from './config/typeorm';
     OrdersModule,
     OrdersDetailModule,
     FilesModule,
+    JwtModule.register({
+      global: true,
+      signOptions: { expiresIn: '1h' },
+      secret: process.env.JWT_SECRET,
+    }),
   ],
   controllers: [],
   providers: [],

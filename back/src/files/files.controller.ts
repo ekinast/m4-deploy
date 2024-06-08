@@ -14,6 +14,7 @@ import {
   FileTypeValidator,
   Put,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
@@ -22,6 +23,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MinSizeValidatorPipe } from 'src/pipes/min-size-validator.pipe';
 import { ProductsDBService } from 'src/products/productsDB.service';
 import { ProductDto } from 'src/products/dto/Product.dto';
+import { AuthGuard } from 'src/auth/auth.guards';
 
 @Controller('files')
 export class FilesController {
@@ -32,6 +34,7 @@ export class FilesController {
 
   //? Subir archivos a Cloudinay.
   @Post('uploadImage/:id')
+  @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   @UsePipes(MinSizeValidatorPipe)
   async putUserImages(

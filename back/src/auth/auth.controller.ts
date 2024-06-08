@@ -6,14 +6,21 @@ import {
   Body,
   HttpStatus,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guards';
 import { LoginUserDto } from './dto/LoginUser.dto';
+import { UsersDBService } from 'src/users/usersDB.service';
+import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authsService: AuthService) {
+  constructor(
+    private readonly authsService: AuthService,
+    private readonly usersDBService: UsersDBService,
+  ) {
     console.log('AuthController instantiated');
   }
   @Get()
@@ -22,10 +29,17 @@ export class AuthController {
   }
 
   @Post('signin')
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  //signIn(@Body() request: { email: string; password: string }) {
+  @UsePipes(new ValidationPipe({ transform: true }))
   signIn(@Body() loginUserDTO: LoginUserDto) {
     return this.authsService.signIn(loginUserDTO);
+  }
+
+  @Post('signup')
+  @HttpCode(201)
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async createUser(@Body() createUserDTO: CreateUserDTO) {
+    return this.authsService.saveUser(createUserDTO);
   }
 }

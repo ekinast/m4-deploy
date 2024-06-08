@@ -1,30 +1,35 @@
-// Pourpose: Verify the credentials in the Authorization header
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
-//import { Host } from '@nestjs/common/interfaces/host.interface';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
+  constructor(private readonly jwtService: JwtService) {}
+
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    const authHeader = request.headers['authorization'];
+    const token = request.headers['authorization']?.split(' ')[1] ?? '';
 
-    if (!authHeader) {
-      return false;
+    if (!token) {
+      throw new UnauthorizedException('Bearer token not found');
     }
-
-    const [method, credentialsBase64] = authHeader.split(' ');
-
-    if (method !== 'Basic' || !credentialsBase64) {
-      return false;
+    try {
+      const secret = process.env.JWT_SECRET;
+      const payload = this.jwtService.verify(token, { secret });
+      payload.iat = new Date(payload.iat * 1000);
+      payload.exp = new Date(payload.exp * 1000);
+      payload.roles = ['admin'];
+      request.user = payload;
+      return true;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
     }
-
-    const credentials = Buffer.from(credentialsBase64, 'base64').toString(
-      'utf-8',
-    );
-
-    return true;
   }
 }

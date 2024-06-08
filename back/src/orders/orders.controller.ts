@@ -33,6 +33,7 @@ export class OrdersController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   async getOrder(@Param('id') id: string) {
     return this.ordersService.findOne(id);
   }

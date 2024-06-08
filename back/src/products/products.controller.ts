@@ -50,7 +50,7 @@ export class ProductsController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
+  //@UseGuards(AuthGuard)
   @HttpCode(201)
   @UseInterceptors(TransformCategoryInterceptor)
   async createProduct(@Body() productDto: ProductDto) {

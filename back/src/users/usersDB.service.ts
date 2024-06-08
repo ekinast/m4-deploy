@@ -43,9 +43,13 @@ export class UsersDBService {
       return null;
     }
   }
-  async saveUser(createUserDTO: CreateUserDTO) {
-    return this.usersRepository.save(createUserDTO);
+
+  async getUserByEmail(email: string) {
+    return this.usersRepository.findOne({ where: { email } });
   }
+  // async saveUser(createUserDTO: CreateUserDTO) {
+  //   return this.usersRepository.save(createUserDTO);
+  // }
 
   async updateUser(id: string, updatedUserData: Partial<User>) {
     const oldUser = await this.usersRepository.findOneBy({ id: id });

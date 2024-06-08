@@ -9,14 +9,14 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable()
-export class ErrorsInterceptor implements NestInterceptor {
+export class AuthErrorsInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError((err) => {
         if (err instanceof BadRequestException) {
           console.error('Validation error:', err.message);
         }
-        return throwError(new BadRequestException(err.message));
+        return throwError(() => new BadRequestException(err.message));
       }),
     );
   }

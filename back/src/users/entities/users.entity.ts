@@ -15,7 +15,7 @@ export class User {
   @Column({ length: 50, nullable: false, unique: true })
   email: string;
 
-  @Column({ length: 20, nullable: false })
+  @Column({ nullable: false })
   password: string;
 
   @Column({ type: 'bigint' })

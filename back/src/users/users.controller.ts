@@ -6,7 +6,6 @@ import {
   HttpCode,
   Param,
   ParseUUIDPipe,
-  Post,
   Put,
   Query,
   UseGuards,
@@ -21,10 +20,7 @@ import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    //private readonly usersService: UsersService,
-    private readonly usersDBService: UsersDBService,
-  ) {
+  constructor(private readonly usersDBService: UsersDBService) {
     console.log('UsersController instantiated');
   }
   @Get()
@@ -48,13 +44,6 @@ export class UsersController {
       };
     }
     return user;
-  }
-
-  @Post()
-  @HttpCode(201)
-  @UsePipes(new ValidationPipe({ transform: true }))
-  async createUser(@Body() createUserDTO: CreateUserDTO) {
-    return this.usersDBService.saveUser(createUserDTO);
   }
 
   @Put(':id')

@@ -17,10 +17,10 @@ import { UsersDBService } from './usersDB.service';
       useClass: PasswordInterceptor,
     },
     UsersDBService,
-    {
-      provide: 'APP_GUARD',
-      useClass: AuthGuard,
-    },
+    // {
+    //   provide: 'APP_GUARD',
+    //   useClass: AuthGuard,
+    // },
   ],
   exports: [TypeOrmModule, UsersDBService],
 })
