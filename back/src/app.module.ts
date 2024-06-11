@@ -13,6 +13,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthErrorsInterceptor } from './interceptors/authErrorsInterceptor';
 import { AllExceptionsFilter } from './filter/global-http-filter';
+import { RoleInterceptor } from './interceptors/role.interceptor';
 
 @Module({
   imports: [
@@ -47,6 +48,10 @@ import { AllExceptionsFilter } from './filter/global-http-filter';
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RoleInterceptor,
     },
   ],
 })

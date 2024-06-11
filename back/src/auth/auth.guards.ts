@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { format } from 'date-fns';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -21,16 +22,11 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException('Bearer token not found');
     }
 
-    // if (!token.startsWith('Bearer ')) {
-    //   throw new UnauthorizedException('Invalid token format');
-    // }
-
     try {
       const secret = process.env.JWT_SECRET;
       const payload = this.jwtService.verify(token, { secret });
       payload.iat = new Date(payload.iat * 1000);
       payload.exp = new Date(payload.exp * 1000);
-      payload.roles = ['admin'];
       request.user = payload;
       return true;
     } catch (error) {

@@ -1,13 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
-//import VerifyPhoneService from './VerifyPhone.service';
 
 @Injectable()
 export class UsersDBService {

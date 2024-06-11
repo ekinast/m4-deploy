@@ -19,6 +19,9 @@ import { ProductDto } from './dto/Product.dto';
 import { AuthGuard } from 'src/auth/auth.guards';
 import { Product } from './products.entity';
 import { TransformCategoryInterceptor } from 'src/interceptors/transform-category.interceptor';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/auth/roles.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -58,7 +61,8 @@ export class ProductsController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(200)
   @UsePipes(new ValidationPipe({ transform: true }))
   async updateProduct(

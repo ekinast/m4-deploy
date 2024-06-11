@@ -68,19 +68,18 @@ export class OrdersService {
       console.log('Order saved', order);
     } catch (error) {
       console.error('Failed to save order', error);
-      return; // Regresar o manejar el error adecuadamente
+      return;
     }
 
-    const orderDetail = new OrderDetail(); // Crear un solo OrderDetail
+    const orderDetail = new OrderDetail();
     orderDetail.order = order;
-    orderDetail.products = []; // Inicializar la lista de productos como un arreglo vacío
-    orderDetail.price = 0; // Inicializar el precio del OrderDetail
+    orderDetail.products = [];
+    orderDetail.price = 0;
 
-    // Añadir productos al OrderDetail
     for (const product of products) {
       if (product && product.stock > 0) {
-        orderDetail.products.push(product); // Agregar producto al OrderDetail
-        orderDetail.price += product.price; // Acumular el precio en el OrderDetail
+        orderDetail.products.push(product);
+        orderDetail.price += product.price;
 
         // Reducir stock
         product.stock -= 1;
@@ -92,7 +91,6 @@ export class OrdersService {
       }
     }
 
-    // Guardar el OrderDetail completo con todos los productos
     try {
       await this.ordersDetailRepository.save(orderDetail);
     } catch (error) {

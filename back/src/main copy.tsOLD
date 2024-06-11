@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './filter/global-http-filter';
 import { LoggerGlobal } from './middlewares/logger.middleware';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './filter/global-http-filter';
+// import { CategoriesController } from './categories/categories.controller';
+// import { ProductsController } from './products/products.controller';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -54,10 +55,10 @@ async function bootstrap() {
       },
     }),
   );
-
   app.use(LoggerGlobal);
   app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(3000);
+  // await CategoriesController.createCategorySeeder();
+  // await ProductsController.createProductSeeder();
 }
-
 bootstrap();
