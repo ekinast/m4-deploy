@@ -1,6 +1,7 @@
 import {
   IsDate,
   IsEmail,
+  IsEmpty,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -62,6 +63,9 @@ export class CreateUserDTO {
 
   @IsDate()
   createdAt: Date;
+
+  @IsEmpty()
+  isAdmin: boolean;
 
   constructor(createdAt?: number) {
     this.createdAt = createdAt ? new Date(createdAt) : this.getLocalDate();

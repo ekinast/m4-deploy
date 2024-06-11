@@ -1,7 +1,6 @@
 // Pourpose: Este es el módulo para el manejo de usuarios
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
-import { AuthGuard } from 'src/auth/auth.guards';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PasswordInterceptor } from 'src/interceptors/password/password.interceptor';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,10 +16,6 @@ import { UsersDBService } from './usersDB.service';
       useClass: PasswordInterceptor,
     },
     UsersDBService,
-    // {
-    //   provide: 'APP_GUARD',
-    //   useClass: AuthGuard,
-    // },
   ],
   exports: [TypeOrmModule, UsersDBService],
 })

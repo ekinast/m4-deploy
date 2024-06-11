@@ -13,6 +13,7 @@ import { User } from 'src/users/entities/users.entity';
 import { SignInDto } from './dtos/sign-in.dto';
 import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
 import * as bcrypt from 'bcrypt';
+import { Role } from './roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -52,6 +53,7 @@ export class AuthService {
       sub: newUser.id,
       id: newUser.id,
       email: newUser.email,
+      roles: [newUser.isAdmin ? Role.Admin : Role.User],
     };
 
     const token = this.jwtService.sign(userPayload);
@@ -59,7 +61,7 @@ export class AuthService {
     //return { succes: 'User logged in successfully' };
   }
 
-  async saveUser(createUserDTO: CreateUserDTO) {
+  async saveUser(createUserDTO: Omit<CreateUserDTO, 'IsAdmin'>) {
     const newUser = await this.usersRepository.findOne({
       where: { email: createUserDTO.email },
     });

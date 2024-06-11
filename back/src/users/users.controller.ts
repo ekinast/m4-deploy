@@ -1,3 +1,4 @@
+import { RolesGuard } from './../auth/roles.guard';
 import {
   Body,
   Controller,
@@ -17,6 +18,8 @@ import { AuthGuard } from '../auth/auth.guards';
 import { UsersDBService } from './usersDB.service';
 import { User } from './entities/users.entity';
 import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/auth/roles.enum';
 
 @Controller('users')
 export class UsersController {
@@ -24,7 +27,8 @@ export class UsersController {
     console.log('UsersController instantiated');
   }
   @Get()
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   async getUsers(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
@@ -34,7 +38,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(AuthGuard, RolesGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   async getUserById(@Param('id', new ParseUUIDPipe()) id: string) {
     const user = await this.usersDBService.getUserById(id);
