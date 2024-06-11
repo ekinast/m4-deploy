@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { LoggerGlobal } from './middlewares/logger.middleware';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './filter/global-http-filter';
 // import { CategoriesController } from './categories/categories.controller';
 // import { ProductsController } from './products/products.controller';
 
@@ -55,6 +56,7 @@ async function bootstrap() {
     }),
   );
   app.use(LoggerGlobal);
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(3000);
   // await CategoriesController.createCategorySeeder();
   // await ProductsController.createProductSeeder();

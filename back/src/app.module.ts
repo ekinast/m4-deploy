@@ -10,6 +10,9 @@ import { OrdersDetailModule } from './orders-detail/orders-detail.module';
 import { FilesModule } from './files/files.module';
 import typeOrmConfig from './config/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { AuthErrorsInterceptor } from './interceptors/authErrorsInterceptor';
+import { AllExceptionsFilter } from './filter/global-http-filter';
 
 @Module({
   imports: [
@@ -36,6 +39,15 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuthErrorsInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}
