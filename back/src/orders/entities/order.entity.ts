@@ -22,7 +22,9 @@ export class Order {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @OneToOne(() => OrderDetail, (orderDetail) => orderDetail.order)
+  @OneToOne(() => OrderDetail, (orderDetail) => orderDetail.order, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   orderDetails: OrderDetail;
 }

@@ -19,6 +19,21 @@ const config = {
   migrations: ['dist/migrations/*{.js,.ts}'],
 };
 
-export default registerAs('typeorm', () => config);
+//export default registerAs('typeorm', () => config);
 
-export const connectionSource = new DataSource(config as DataSourceOptions);
+console.log('DataSource Config:', config);
+
+//export const connectionSource = new DataSource(config as DataSourceOptions);
+const connectionSource = new DataSource(config as DataSourceOptions);
+
+connectionSource
+  .initialize()
+  .then(() => {
+    console.log('DataSource has been initialized!');
+  })
+  .catch((err) => {
+    console.error('Error during DataSource initialization:', err);
+  });
+
+export default registerAs('typeorm', () => config);
+export { connectionSource };

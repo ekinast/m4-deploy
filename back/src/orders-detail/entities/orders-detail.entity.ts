@@ -27,10 +27,12 @@ export class OrderDetail {
   })
   price: number;
 
-  @OneToOne(() => Order, (order) => order.orderDetails)
+  @OneToOne(() => Order, (order) => order.orderDetails, { onDelete: 'CASCADE' })
   order: Order;
 
-  @ManyToMany(() => Product)
+  @ManyToMany(() => Product, (product) => product.orderDetails, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable({
     name: 'order_details_products', // El nombre de la tabla de unión
     joinColumn: {
