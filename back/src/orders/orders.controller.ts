@@ -20,8 +20,8 @@ export class OrdersController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
   @HttpCode(201)
+  @UseGuards(AuthGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
   async addOrder(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.addOrder(createOrderDto);

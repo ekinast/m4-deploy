@@ -19,18 +19,21 @@ export class User {
   password: string;
 
   @Column({ type: 'bigint' })
-  phone: number;
+  phone?: number;
 
   @Column({ length: 50 })
-  country: string;
+  country?: string;
 
   @Column()
-  address: string;
+  address?: string;
 
   @Column({ length: 50 })
-  city: string;
+  city?: string;
 
-  @OneToMany(() => Order, (order) => order.user)
+  @OneToMany(() => Order, (order) => order.user, {
+    cascade: ['remove'],
+    onDelete: 'CASCADE',
+  })
   orders: Order[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
