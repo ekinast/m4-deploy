@@ -4,9 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersDBService } from './usersDB.service';
 import { UsersController } from './users.controller';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { PasswordInterceptor } from 'src/interceptors/password/password.interceptor';
+import { PasswordInterceptor } from '../interceptors/password/password.interceptor';
 import { User } from './entities/users.entity';
-import { Order } from 'src/orders/entities/order.entity';
+import { Order } from '../orders/entities/order.entity';
 import { OrderDetail } from '../orders-detail/entities/orders-detail.entity';
 
 @Module({

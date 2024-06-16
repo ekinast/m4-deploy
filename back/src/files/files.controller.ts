@@ -20,10 +20,10 @@ import { FilesService } from './files.service';
 import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { MinSizeValidatorPipe } from 'src/pipes/min-size-validator.pipe';
-import { ProductsDBService } from 'src/products/productsDB.service';
-import { ProductDto } from 'src/products/dto/Product.dto';
-import { AuthGuard } from 'src/auth/auth.guards';
+import { MinSizeValidatorPipe } from '../pipes/min-size-validator.pipe';
+import { ProductsDBService } from '../products/productsDB.service';
+import { ProductDto } from '../products/dto/Product.dto';
+import { AuthGuard } from '../auth/auth.guards';
 
 @Controller('files')
 export class FilesController {

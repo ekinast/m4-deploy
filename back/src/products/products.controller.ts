@@ -16,12 +16,12 @@ import {
 } from '@nestjs/common';
 import { ProductsDBService } from './productsDB.service';
 import { ProductDto } from './dto/Product.dto';
-import { AuthGuard } from 'src/auth/auth.guards';
+import { AuthGuard } from '../auth/auth.guards';
 import { Product } from './products.entity';
-import { TransformCategoryInterceptor } from 'src/interceptors/transform-category.interceptor';
-import { Roles } from 'src/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { TransformCategoryInterceptor } from '../interceptors/transform-category.interceptor';
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../auth/roles.enum';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('products')
 export class ProductsController {

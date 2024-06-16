@@ -9,9 +9,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
-import { User } from 'src/users/entities/users.entity';
+import { User } from '../users/entities/users.entity';
 import { SignInDto } from './dtos/sign-in.dto';
-import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
+import { CreateUserDTO } from '../users/dto/CreateUser.dto';
 import * as bcrypt from 'bcrypt';
 import { Role } from './roles.enum';
 

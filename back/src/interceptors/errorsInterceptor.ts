@@ -5,6 +5,7 @@ import {
   CallHandler,
   BadRequestException,
   InternalServerErrorException,
+  HttpException,
 } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -47,6 +48,11 @@ export class ErrorsInterceptor implements NestInterceptor {
           console.error('Type error:', err.message, err.stack);
         } else {
           console.error('Other error:', err);
+        }
+
+        // Re-throw if it's an instance of HttpException
+        if (err instanceof HttpException) {
+          return throwError(() => err);
         }
 
         return throwError(

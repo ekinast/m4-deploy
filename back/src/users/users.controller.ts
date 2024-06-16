@@ -17,9 +17,9 @@ import {
 import { AuthGuard } from '../auth/auth.guards';
 import { UsersDBService } from './usersDB.service';
 import { User } from './entities/users.entity';
-import { CreateUserDTO } from 'src/users/dto/CreateUser.dto';
-import { Roles } from 'src/decorators/roles.decorator';
-import { Role } from 'src/auth/roles.enum';
+import { CreateUserDTO } from '../users/dto/CreateUser.dto';
+import { Roles } from '../decorators/roles.decorator';
+import { Role } from '../auth/roles.enum';
 
 @Controller('users')
 export class UsersController {

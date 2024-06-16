@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './products.entity';
 import { Repository } from 'typeorm';
-import { Category } from 'src/categories/categories.entity';
+import { Category } from '../categories/categories.entity';
 import { data } from '../archivo/archivo.js';
 import { ProductDto } from './dto/Product.dto';
 

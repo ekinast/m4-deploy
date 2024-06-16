@@ -5,16 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from 'src/products/products.entity';
+import { Product } from '../products/products.entity';
 import { Repository } from 'typeorm';
-import { Category } from 'src/categories/categories.entity';
+import { Category } from '../categories/categories.entity';
 import { Order } from './entities/order.entity';
-import { User } from 'src/users/entities/users.entity';
-import { OrderDetail } from 'src/orders-detail/entities/orders-detail.entity';
+import { User } from '../users/entities/users.entity';
+import { OrderDetail } from '../orders-detail/entities/orders-detail.entity';
 import { validateUser, validateProducts } from './orderValidation.service';
 import { UsersDBService } from '../users/usersDB.service';
-import { ProductsDBService } from 'src/products/productsDB.service';
+import { ProductsDBService } from '../products/productsDB.service';
 import { CreateOrderDto } from '../orders/dto/CreateOrder.dto';
+import { DataSource } from 'typeorm';
 
 type OrderResponse = {
   id: string;
@@ -33,6 +34,7 @@ export class OrdersService {
     private categoriesRepository: Repository<Category>,
     @InjectRepository(OrderDetail)
     private ordersDetailRepository: Repository<OrderDetail>,
+    private dataSource: DataSource,
   ) {}
 
   async addOrder(createOrderDto: CreateOrderDto): Promise<OrderResponse> {
@@ -57,12 +59,11 @@ export class OrdersService {
       );
     }
 
-    // Crear la orden
     const order = new Order();
     order.user = user;
     order.createdAt = new Date();
 
-    // Primero guardar la orden para asegurar que tenga un ID
+    // Primero guardo la orden para asegurar que tenga un ID
     try {
       await this.ordersRepository.save(order);
       console.log('Order saved', order);
@@ -106,14 +107,57 @@ export class OrdersService {
     };
   }
 
-  findAll() {
-    return this.ordersRepository.find({ relations: ['orderDetails'] });
+  async findAll() {
+    return await this.ordersRepository.find({ relations: ['orderDetails'] });
   }
 
-  findOne(id: string) {
-    return this.ordersRepository.findOne({
+  async findOne(id: string) {
+    return await this.ordersRepository.findOne({
       where: { id: id },
       relations: ['orderDetails', 'orderDetails.products'],
     });
+  }
+
+  async deleteOrder(id: string) {
+    const order = await this.ordersRepository.findOne({
+      where: { id },
+      relations: ['orderDetails', 'orderDetails.products', 'user'],
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Orden con ID ${id} no encontrada`);
+    }
+
+    await this.dataSource.transaction(async (transactionalEntityManager) => {
+      try {
+        if (order.orderDetails) {
+          await transactionalEntityManager.remove(
+            OrderDetail,
+            order.orderDetails,
+          );
+        }
+
+        await transactionalEntityManager.remove(Order, order);
+
+        // Opcional: Actualiza el usuario para eliminar la referencia a la orden si es necesario
+        const user = await this.usersRepository.findOne({
+          where: { id: order.user.id },
+          relations: ['orders'],
+        });
+
+        if (user) {
+          user.orders = user.orders.filter((o) => o.id !== id);
+          await transactionalEntityManager.save(User, user);
+        }
+      } catch (error) {
+        console.error(
+          'Error durante la transacción, haciendo rollback...',
+          error,
+        );
+        throw error;
+      }
+    });
+
+    return { success: `Órden con ID ${id} eliminada correctamente` };
   }
 }

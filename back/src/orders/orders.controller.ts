@@ -8,10 +8,11 @@ import {
   HttpCode,
   UsePipes,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/CreateOrder.dto';
-import { AuthGuard } from 'src/auth/auth.guards';
+import { AuthGuard } from '../auth/auth.guards';
 
 @Controller('orders')
 export class OrdersController {
@@ -28,13 +29,19 @@ export class OrdersController {
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  async findAll() {
+    return await this.ordersService.findAll();
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
   async getOrder(@Param('id') id: string) {
-    return this.ordersService.findOne(id);
+    return await this.ordersService.findOne(id);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  async deleteOrder(@Param('id') id: string) {
+    return await this.ordersService.deleteOrder(id);
   }
 }

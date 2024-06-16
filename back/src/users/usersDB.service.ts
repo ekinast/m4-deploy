@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/users.entity';
 import { DataSource, Repository } from 'typeorm';
-import { Order } from 'src/orders/entities/order.entity';
+import { Order } from '../orders/entities/order.entity';
 import { OrderDetail } from '../orders-detail/entities/orders-detail.entity';
 
 @Injectable()
@@ -37,10 +37,8 @@ export class UsersDBService {
     if (user) {
       return {
         ...user,
-        //orders: orders,
       };
     } else {
-      // Maneja el caso de que no se encuentre el usuario
       return null;
     }
   }
@@ -48,9 +46,6 @@ export class UsersDBService {
   async getUserByEmail(email: string) {
     return this.usersRepository.findOne({ where: { email } });
   }
-  // async saveUser(createUserDTO: CreateUserDTO) {
-  //   return this.usersRepository.save(createUserDTO);
-  // }
 
   async updateUser(id: string, updatedUserData: Partial<User>) {
     const oldUser = await this.usersRepository.findOneBy({ id: id });
@@ -63,8 +58,6 @@ export class UsersDBService {
     Object.assign(oldUser, updatedUserData);
 
     const updatedUser = await this.usersRepository.save(oldUser);
-
-    // Retornar el usuario actualizado
     return updatedUser;
   }
 
