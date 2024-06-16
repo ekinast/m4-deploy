@@ -17,6 +17,27 @@ describe('AppController (e2e)', () => {
 
   let token = '';
   let userId = '';
+  let orderId = '';
+
+  it('Post /auth/signup/ Signsup a user with an 201 status code and a user body without password and isAdmin field', async () => {
+    const userCredentials = {
+      name: 'Test User',
+      email: 'test@mail.com',
+      password: 'Admin$1234',
+      phone: 543548561234,
+      country: 'Argentina',
+      address: 'Test 123',
+      city: 'Test City',
+    };
+
+    const req = await request(app.getHttpServer())
+      .post('/auth/signup')
+      .send(userCredentials);
+
+    userId = req.body.id;
+    expect(req.status).toBe(201);
+    expect(req.body).toBeInstanceOf(Object);
+  });
 
   it('Post /auth/signin/ Returns a user with an OK status code and a token', async () => {
     const userCredentials = {
@@ -38,7 +59,7 @@ describe('AppController (e2e)', () => {
       .get('/users/')
       .set('Authorization', `Bearer ${token}`);
 
-    userId = req.body[0].id;
+    userId = req.body[1].id;
     expect(req.status).toBe(200);
     expect(req.body).toBeInstanceOf(Array);
   });
@@ -52,25 +73,27 @@ describe('AppController (e2e)', () => {
     expect(req.body).toBeInstanceOf(Object);
   });
 
-  it('Post /orders/ Adds a new order and returns order.id and total price', async () => {
-    const newOrder = {
-      userId: userId,
-      products: [
-        { id: '3a298f80-cadb-4354-b916-1073f648760d' },
-        { id: 'a43c8f70-b2d9-4eb3-9ef6-f0bf2c3bb3d0' },
-      ],
-    };
+  for (let i = 0; i < 2; i++) {
+    it('Post /orders/ Adds two new orders and returns order.id and total price', async () => {
+      const newOrder = {
+        userId: userId,
+        products: [
+          { id: '3a298f80-cadb-4354-b916-1073f648760d' },
+          { id: 'a43c8f70-b2d9-4eb3-9ef6-f0bf2c3bb3d0' },
+        ],
+      };
 
-    const req = await request(app.getHttpServer())
-      .post('/orders')
-      .send(newOrder)
-      .set('Authorization', `Bearer ${token}`);
+      const req = await request(app.getHttpServer())
+        .post('/orders')
+        .send(newOrder)
+        .set('Authorization', `Bearer ${token}`);
 
-    console.log(req.body);
+      orderId = req.body.id;
 
-    expect(req.status).toBe(201);
-    expect(req.body).toBeInstanceOf(Object);
-  });
+      expect(req.status).toBe(201);
+      expect(req.body).toBeInstanceOf(Object);
+    });
+  }
 
   it('Get /orders/ Returns orders with an OK status code', async () => {
     const req = await request(app.getHttpServer())
@@ -81,23 +104,12 @@ describe('AppController (e2e)', () => {
     expect(req.body).toBeInstanceOf(Array);
   });
 
-  it('Post /auth/signup/ Signsup a user with an 201 status code and a user body without password and isAdmin field', async () => {
-    const userCredentials = {
-      name: 'Test User',
-      email: 'test@mail.com',
-      password: 'Admin$1234',
-      phone: 543548561234,
-      country: 'Argentina',
-      address: 'Test 123',
-      city: 'Test City',
-    };
-
+  it('Delete /orders/:id Deletes an order with an OK status code and the orders id', async () => {
     const req = await request(app.getHttpServer())
-      .post('/auth/signup')
-      .send(userCredentials);
+      .delete(`/orders/${orderId}`)
+      .set('Authorization', `Bearer ${token}`);
 
-    userId = req.body.id;
-    expect(req.status).toBe(201);
+    expect(req.status).toBe(200);
     expect(req.body).toBeInstanceOf(Object);
   });
 
