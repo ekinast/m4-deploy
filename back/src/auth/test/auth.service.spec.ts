@@ -61,6 +61,7 @@ describe('AuthService', () => {
 
     expect(newUser).toBeDefined();
     expect(newUser.password).not.toEqual(mockUser.password);
+    expect(newUser).toHaveProperty('id');
 
     const isMatch = await bcrypt.compare(mockUser.password, newUser.password);
     expect(isMatch).toBe(true);

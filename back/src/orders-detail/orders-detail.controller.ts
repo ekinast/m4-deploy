@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { OrdersDetailService } from './orders-detail.service';
 import { OrderDetail } from './entities/orders-detail.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('OrdersDetail')
 @Controller('orders-detail')
 export class OrdersDetailController {
   constructor(private readonly ordersDetailService: OrdersDetailService) {
@@ -20,6 +22,6 @@ export class OrdersDetailController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.ordersDetailService.findOne(+id);
+    return this.ordersDetailService.findOne(id);
   }
 }

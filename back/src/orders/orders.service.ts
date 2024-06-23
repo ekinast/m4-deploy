@@ -109,6 +109,7 @@ export class OrdersService {
 
   async findAll() {
     return await this.ordersRepository.find({ relations: ['orderDetails'] });
+    //return await this.ordersRepository.find();
   }
 
   async findOne(id: string) {

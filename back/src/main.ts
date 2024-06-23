@@ -3,6 +3,9 @@ import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './filter/global-http-filter';
 import { LoggerGlobal } from './middlewares/logger.middleware';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { CreateOrderDto } from './orders/dto/CreateOrder.dto';
+import { ProductPartialDto } from './orders/dto/ProductPartial.dto';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -57,6 +60,22 @@ async function bootstrap() {
 
   app.use(LoggerGlobal);
   app.useGlobalFilters(new AllExceptionsFilter());
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Demo NestJS API')
+    .setDescription(
+      'Esta es una API creada con NestJS para el módulo 4 del curso de FullStack de HENRY',
+    )
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, swaggerConfig, {
+    extraModels: [CreateOrderDto, ProductPartialDto],
+  });
+
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(3000);
 }
 

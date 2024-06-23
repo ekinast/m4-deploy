@@ -22,7 +22,9 @@ import { TransformCategoryInterceptor } from '../interceptors/transform-category
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../auth/roles.enum';
 import { RolesGuard } from '../auth/roles.guard';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsDBService: ProductsDBService) {
@@ -30,6 +32,18 @@ export class ProductsController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Number of items per page',
+    example: 5,
+  })
   async getProducts(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
@@ -53,7 +67,6 @@ export class ProductsController {
   }
 
   @Post()
-  //@UseGuards(AuthGuard)
   @HttpCode(201)
   @UseInterceptors(TransformCategoryInterceptor)
   async createProduct(@Body() productDto: ProductDto) {
@@ -61,6 +74,7 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(200)
@@ -72,7 +86,10 @@ export class ProductsController {
     return this.productsDBService.updateProduct(id, product);
   }
 
+  // DELETE /orders/:id no está pedido en el enunciado del HW pero lo agregué para completar el CRUD
+  // y poder dar de baja un producto
   @Delete(':id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async deleteProduct(@Param('id', new ParseUUIDPipe()) id: string) {

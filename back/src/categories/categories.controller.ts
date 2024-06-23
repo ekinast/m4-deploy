@@ -15,13 +15,40 @@ import { CategoriesDBService } from './categoriesDB.service';
 import { CreateCategoryDTO } from './dto/CreateCategory.dto';
 import { UpdateCategoryDTO } from './dto/UpdateCategory.dto';
 import { Category } from './categories.entity';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { CategoryResponseDTO } from './dto/CategoryResponse.dto';
 
+@ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesDBService: CategoriesDBService) {
     console.log('CategoriesController instantiated');
   }
   @Get()
+  @ApiOperation({ summary: 'Get categories' })
+  @ApiResponse({
+    status: 200,
+    description: 'The categories have been got successfully.',
+    type: CategoryResponseDTO,
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Number of items per page',
+    example: 5,
+  })
   async getCategories(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
@@ -32,6 +59,12 @@ export class CategoriesController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get category by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The category has been got successfully.',
+    type: CategoryResponseDTO,
+  })
   async getCategoryById(@Param('id') id: string) {
     const category = await this.categoriesDBService.getCategoryById(id);
     if (!category) {
@@ -43,6 +76,12 @@ export class CategoriesController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create category' })
+  @ApiResponse({
+    status: 201,
+    description: 'The category has been successfully created.',
+    type: CategoryResponseDTO,
+  })
   @HttpCode(201)
   async createCategory(@Body() createCategoryDto: CreateCategoryDTO) {
     return this.categoriesDBService.addCategory(createCategoryDto);
@@ -67,6 +106,12 @@ export class CategoriesController {
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update category' })
+  @ApiResponse({
+    status: 200,
+    description: 'The category has been successfully updated.',
+    type: CategoryResponseDTO,
+  })
   @HttpCode(200)
   async updateCategory(
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -76,6 +121,13 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete category' })
+  @ApiResponse({
+    status: 200,
+    description: 'The category has been successfully deleted.',
+    type: CategoryResponseDTO,
+  })
   @HttpCode(200)
   async deleteCategory(@Param('id') id: string) {
     return this.categoriesDBService.deleteCategory(id);

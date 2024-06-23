@@ -19,10 +19,10 @@ export class OrdersDetailService {
   }
 
   findAll() {
-    return `This action returns all ordersDetail`;
+    return this.ordersDetailRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ordersDetail`;
+  findOne(id: string) {
+    return this.ordersDetailRepository.findOne({ where: { id: id } });
   }
 }

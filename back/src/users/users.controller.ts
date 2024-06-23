@@ -20,15 +20,30 @@ import { User } from './entities/users.entity';
 import { CreateUserDTO } from '../users/dto/CreateUser.dto';
 import { Roles } from '../decorators/roles.decorator';
 import { Role } from '../auth/roles.enum';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersDBService: UsersDBService) {
     console.log('UsersController instantiated');
   }
   @Get()
+  @ApiBearerAuth()
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Number of items per page',
+    example: 5,
+  })
   async getUsers(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5,
@@ -38,6 +53,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   @Roles(Role.Admin)
   @UseGuards(AuthGuard, RolesGuard)
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -52,6 +68,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -63,6 +80,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @HttpCode(200)
   async deleteUser(@Param('id', new ParseUUIDPipe()) id: string) {

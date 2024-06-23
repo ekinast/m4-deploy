@@ -1,7 +1,5 @@
 import {
   BadRequestException,
-  HttpException,
-  HttpStatus,
   Injectable,
   Logger,
   UnauthorizedException,
@@ -25,10 +23,6 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  getAuth(): string {
-    return 'This action returns all auth';
-  }
-
   async signIn(signInDto: SignInDto) {
     const { email, password } = signInDto;
 
@@ -37,16 +31,12 @@ export class AuthService {
     });
 
     if (!newUser) {
-      //throw new BadRequestException('Email o password incorrectos');
-      //throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-      this.logger.error('UnauthorizedException: Email o password incorrectos');
-      throw new BadRequestException('Email o password incorrectos');
+      throw new UnauthorizedException('Email o password incorrectos');
     }
 
     const isPasswordValid = await bcrypt.compare(password, newUser.password);
     if (!isPasswordValid) {
-      this.logger.error('UnauthorizedException: Email o password incorrectos');
-      throw new BadRequestException('Email o password incorrectos');
+      throw new UnauthorizedException('Email o password incorrectos');
     }
 
     const userPayload = {
@@ -61,11 +51,11 @@ export class AuthService {
     //return { succes: 'User logged in successfully' };
   }
 
-  async saveUser(createUserDTO: Omit<CreateUserDTO, 'IsAdmin'>) {
-    const newUser = await this.usersRepository.findOne({
+  async saveUser(createUserDTO: Omit<CreateUserDTO, 'isAdmin'>) {
+    const existingUser = await this.usersRepository.findOne({
       where: { email: createUserDTO.email },
     });
-    if (newUser) {
+    if (existingUser) {
       throw new BadRequestException('User already exists');
     }
 

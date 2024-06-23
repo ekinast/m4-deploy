@@ -1,30 +1,35 @@
 import {
   Controller,
-  Get,
   Post,
-  Body,
-  Patch,
   Param,
-  Delete,
   UseInterceptors,
   UsePipes,
   UploadedFile,
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
-  Put,
   ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
 import { FilesService } from './files.service';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MinSizeValidatorPipe } from '../pipes/min-size-validator.pipe';
 import { ProductsDBService } from '../products/productsDB.service';
 import { ProductDto } from '../products/dto/Product.dto';
 import { AuthGuard } from '../auth/auth.guards';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { Express } from 'express';
 
+@ApiTags('Files')
 @Controller('files')
 export class FilesController {
   constructor(
@@ -34,6 +39,37 @@ export class FilesController {
 
   //? Subir archivos a Cloudinay.
   @Post('uploadImage/:id')
+  @ApiOperation({ summary: 'Upload an image for a product' })
+  @ApiParam({
+    name: 'id',
+    description: 'The ID of the product',
+    type: String,
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'The image to upload',
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The URL of the uploaded image',
+    schema: {
+      type: 'object',
+      properties: {
+        imageUrl: { type: 'string' },
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   @UsePipes(MinSizeValidatorPipe)
@@ -57,7 +93,7 @@ export class FilesController {
     //console.log('file', file);
     const myImg = await this.filesService.uploadImage(file);
     const imgUrl = myImg.secure_url;
-    console.log('imgUrl', imgUrl);
+    //console.log('imgUrl', imgUrl);
 
     const productDto: Partial<ProductDto> = {
       imgUrl: imgUrl,
@@ -68,32 +104,5 @@ export class FilesController {
     );
     return updateProduct;
     //return file;
-  }
-
-  // @Post('uploadImage/:id')
-  // @UseInterceptors(FileInterceptor('image'))
-  // getUserImages(@UploadedFile() file: Express.Multer.File) {
-  //   //return file;
-  //   return this.filesService.uploadImage(file);
-  // }
-
-  @Get()
-  findAll() {
-    return this.filesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.filesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
-    return this.filesService.update(+id, updateFileDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.filesService.remove(+id);
   }
 }

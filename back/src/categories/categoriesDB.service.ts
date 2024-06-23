@@ -47,10 +47,8 @@ export class CategoriesDBService {
     }
     Object.assign(oldCategory, updatedCategoryData);
 
-    // Guardar los cambios en la base de datos
     const updatedCategory = await this.categoriesRepository.save(oldCategory);
 
-    // Retornar el usuario actualizado
     return updatedCategory;
   }
 
@@ -72,10 +70,8 @@ export class CategoriesDBService {
       throw new NotFoundException('No se proveyeron categorías');
     }
 
-    // Crear un array para almacenar las categorías únicas
     const uniqueCategories: Category[] = [];
 
-    // Verificar cada categoría individualmente y añadir las que no existen
     for (const category of categories) {
       const exists = await this.categoryExists(category.name);
       if (!exists) {
@@ -88,7 +84,6 @@ export class CategoriesDBService {
     }
 
     try {
-      // Guardar todas las categorías únicas en la base de datos
       return await this.categoriesRepository.save(uniqueCategories);
     } catch (error) {
       throw new NotFoundException(
