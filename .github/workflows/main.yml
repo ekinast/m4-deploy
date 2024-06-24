@@ -8,24 +8,31 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    -
-      name: Checkout
+    - name: Checkout
       uses: actions/checkout@v4
-    -
-      name: Login to Docker hub
+
+    - name: Login to Docker hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    -
-      name: Set up Docker Buildx
+
+    - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-    -
-      name: Build and push
+
+    - name: Clean npm cache
+      run: npm cache clean --force
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./back  # Asegúrate de apuntar al directorio correcto si tienes un monorepo
+
+    - name: Build and push
       uses: docker/build-push-action@v5
       with:
-        context: .
+        context: ./back
         file: ./back/Dockerfile
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/m4-deploy:latest
