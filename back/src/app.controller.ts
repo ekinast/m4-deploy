@@ -12,7 +12,7 @@ export class AppController {
 
   @Get('favicon.ico')
   getFavicon(@Res() res: Response): void {
-    const faviconPath = path.join(__dirname, '..', 'public', 'favicon.ico');
+    const faviconPath = path.join(__dirname, '..', 'public', 'favicon.png');
     if (fs.existsSync(faviconPath)) {
       res.sendFile(faviconPath);
     } else {

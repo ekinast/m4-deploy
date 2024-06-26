@@ -12,18 +12,13 @@ const config = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   autoLoadEntities: true,
-  synchronize: false,
+  synchronize: true,
   //dropSchema: true,
   logging: true,
   entities: ['dist/**/*.entity{.js,.ts}'],
   migrations: ['dist/migrations/*{.js,.ts}'],
 };
 
-//export default registerAs('typeorm', () => config);
-
-//console.log('DataSource Config:', config);
-
-//export const connectionSource = new DataSource(config as DataSourceOptions);
 const connectionSource = new DataSource(config as DataSourceOptions);
 
 connectionSource
