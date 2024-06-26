@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
@@ -14,6 +14,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthErrorsInterceptor } from './interceptors/authErrorsInterceptor';
 import { AllExceptionsFilter } from './filter/global-http-filter';
 import { RoleInterceptor } from './interceptors/role.interceptor';
+import { HeadMiddleware } from './middlewares/head.middleware';
 
 @Module({
   imports: [
@@ -55,4 +56,8 @@ import { RoleInterceptor } from './interceptors/role.interceptor';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(HeadMiddleware).forRoutes('*');
+  }
+}
