@@ -56,8 +56,8 @@ import { HeadMiddleware } from './middlewares/head.middleware';
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(HeadMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
+
+// configure(consumer: MiddlewareConsumer) {
+//   consumer.apply(HeadMiddleware).forRoutes('*');
+// }
