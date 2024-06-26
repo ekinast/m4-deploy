@@ -3,7 +3,7 @@ version: '3.8'
 services:
   nestapp:
     image: ekinast/m4-deploy:latest
-    container_name: nest-back-docker
+    #container_name: nest-back-docker
     ports:
       - '3001:3000'
     env_file:
@@ -13,9 +13,10 @@ services:
     networks:
       - nestnetwork
 
-  postgresdb:
+  #postgresdb:
+  postgresdb2:
     image: postgres:latest
-    container_name: postgresdb2
+    #container_name: postgresdb2
     volumes:
       - pgdata:/var/lib/postgresql/data
     env_file:
