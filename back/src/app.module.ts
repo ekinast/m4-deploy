@@ -16,6 +16,7 @@ import { AllExceptionsFilter } from './filter/global-http-filter';
 import { RoleInterceptor } from './interceptors/role.interceptor';
 import { SeedsModule } from './seeds/seeds.module';
 import { DateTimeMiddleware } from './middlewares/date-time.middleware';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -42,7 +43,7 @@ import { DateTimeMiddleware } from './middlewares/date-time.middleware';
       secret: process.env.JWT_SECRET,
     }),
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_INTERCEPTOR,
