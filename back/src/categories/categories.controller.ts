@@ -15,13 +15,7 @@ import { CategoriesDBService } from './categoriesDB.service';
 import { CreateCategoryDTO } from './dto/CreateCategory.dto';
 import { UpdateCategoryDTO } from './dto/UpdateCategory.dto';
 import { Category } from './categories.entity';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CategoryResponseDTO } from './dto/CategoryResponse.dto';
 
 @ApiTags('Categories')
@@ -31,7 +25,7 @@ export class CategoriesController {
     console.log('CategoriesController instantiated');
   }
   @Get()
-  @ApiOperation({ summary: 'Get categories' })
+  @ApiOperation({ summary: 'Ver todas las categorías' })
   @ApiResponse({
     status: 200,
     description: 'The categories have been got successfully.',
@@ -59,13 +53,13 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get category by id' })
+  @ApiOperation({ summary: 'Ver una categoría por :id' })
   @ApiResponse({
     status: 200,
     description: 'The category has been got successfully.',
     type: CategoryResponseDTO,
   })
-  async getCategoryById(@Param('id') id: string) {
+  async getCategoryById(@Param('id', ParseUUIDPipe) id: string) {
     const category = await this.categoriesDBService.getCategoryById(id);
     if (!category) {
       return {
@@ -76,7 +70,7 @@ export class CategoriesController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Create category' })
+  @ApiOperation({ summary: 'Crear una categoría' })
   @ApiResponse({
     status: 201,
     description: 'The category has been successfully created.',
@@ -88,6 +82,7 @@ export class CategoriesController {
   }
 
   @Post('seeder')
+  @ApiOperation({ summary: 'Carga inicial de categorías' })
   @HttpCode(201)
   async seedCategories() {
     const categories = [
@@ -106,7 +101,7 @@ export class CategoriesController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update category' })
+  @ApiOperation({ summary: 'Cambiar una categoría' })
   @ApiResponse({
     status: 200,
     description: 'The category has been successfully updated.',
@@ -120,16 +115,16 @@ export class CategoriesController {
     return this.categoriesDBService.updateCategory(id, updateCategoryDto);
   }
 
-  @Delete(':id')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Delete category' })
-  @ApiResponse({
-    status: 200,
-    description: 'The category has been successfully deleted.',
-    type: CategoryResponseDTO,
-  })
-  @HttpCode(200)
-  async deleteCategory(@Param('id') id: string) {
-    return this.categoriesDBService.deleteCategory(id);
-  }
+  // @Delete(':id')
+  // @ApiBearerAuth()
+  // @ApiOperation({ summary: 'Delete category' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'The category has been successfully deleted.',
+  //   type: CategoryResponseDTO,
+  // })
+  // @HttpCode(200)
+  // async deleteCategory(@Param('id') id: string) {
+  //   return this.categoriesDBService.deleteCategory(id);
+  // }
 }

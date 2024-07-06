@@ -39,7 +39,7 @@ export class FilesController {
 
   //? Subir archivos a Cloudinay.
   @Post('uploadImage/:id')
-  @ApiOperation({ summary: 'Upload an image for a product' })
+  @ApiOperation({ summary: 'Subir a la WEB una imagen de un producto' })
   @ApiParam({
     name: 'id',
     description: 'The ID of the product',

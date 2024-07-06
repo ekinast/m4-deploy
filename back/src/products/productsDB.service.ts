@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './products.entity';
 import { Repository } from 'typeorm';
@@ -93,6 +97,10 @@ export class ProductsDBService {
           });
           await this.productsRepository.save(newProduct);
         }
+      } else {
+        throw new BadRequestException(
+          `Product already exists: ${product.name}`,
+        );
       }
     }
     return this.productsRepository.find();
@@ -104,7 +112,7 @@ export class ProductsDBService {
       where: { name: product.name },
     });
     if (existingProduct) {
-      throw new NotFoundException(`Product already exists: ${product.name}`);
+      throw new BadRequestException(`Product already exists: ${product.name}`);
     }
 
     // Verificar si la categoría existe

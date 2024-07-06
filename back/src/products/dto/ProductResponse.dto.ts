@@ -1,13 +1,7 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import {
-  IsString,
-  IsNumber,
-  IsOptional,
-  IsUUID,
-  IsEmpty,
-} from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsUUID } from 'class-validator';
 
-export class ProductDto {
+export class ProductResponseDto {
   @IsOptional()
   @IsString()
   @ApiProperty({
@@ -52,13 +46,4 @@ export class ProductDto {
     type: String,
   })
   imgUrl?: string;
-
-  @IsOptional()
-  @IsUUID()
-  @ApiProperty({
-    description: 'La categoría del producto debe ser un UUID válido.',
-    example: 'da8ad353-34ba-44fc-b8f2-1bbf72d8b55e',
-    type: String,
-  })
-  category?: string;
 }

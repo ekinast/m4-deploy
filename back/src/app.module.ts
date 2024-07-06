@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
@@ -14,7 +14,8 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthErrorsInterceptor } from './interceptors/authErrorsInterceptor';
 import { AllExceptionsFilter } from './filter/global-http-filter';
 import { RoleInterceptor } from './interceptors/role.interceptor';
-import { HeadMiddleware } from './middlewares/head.middleware';
+import { SeedsModule } from './seeds/seeds.module';
+import { DateTimeMiddleware } from './middlewares/date-time.middleware';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { HeadMiddleware } from './middlewares/head.middleware';
     OrdersModule,
     OrdersDetailModule,
     FilesModule,
+    SeedsModule,
     JwtModule.register({
       global: true,
       signOptions: { expiresIn: '1h' },
@@ -56,8 +58,8 @@ import { HeadMiddleware } from './middlewares/head.middleware';
     },
   ],
 })
-export class AppModule {}
-
-// configure(consumer: MiddlewareConsumer) {
-//   consumer.apply(HeadMiddleware).forRoutes('*');
-// }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(DateTimeMiddleware).forRoutes('*'); // Aplica el middleware a todas las rutas
+  }
+}

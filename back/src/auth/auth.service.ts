@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/users.entity';
 import { SignInDto } from './dtos/sign-in.dto';
-import { CreateUserDTO } from '../users/dto/CreateUser.dto';
+import { CreateUserDto } from '../users/dto/CreateUser.dto';
 import * as bcrypt from 'bcrypt';
 import { Role } from './roles.enum';
 
@@ -51,21 +51,29 @@ export class AuthService {
     //return { succes: 'User logged in successfully' };
   }
 
-  async saveUser(createUserDTO: Omit<CreateUserDTO, 'isAdmin'>) {
+  async saveUser(createUserDto: Omit<CreateUserDto, 'isAdmin'>) {
     const existingUser = await this.usersRepository.findOne({
-      where: { email: createUserDTO.email },
+      where: { email: createUserDto.email },
     });
     if (existingUser) {
       throw new BadRequestException('User already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
     if (!hashedPassword) {
       throw new BadRequestException('Password hashing failed');
     }
 
-    createUserDTO.password = hashedPassword;
+    createUserDto.password = hashedPassword;
 
-    return await this.usersRepository.save(createUserDTO);
+    const user = this.usersRepository.create(createUserDto);
+
+    if (!createUserDto.createdAt) {
+      user.createdAt = new Date();
+    } else {
+      user.createdAt = new Date(createUserDto.createdAt);
+    }
+
+    return await this.usersRepository.save(user);
   }
 }

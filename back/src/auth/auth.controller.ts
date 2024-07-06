@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   HttpCode,
   Body,
@@ -11,8 +10,8 @@ import {
 import { AuthService } from './auth.service';
 import { SignInDto } from './dtos/sign-in.dto';
 import { UsersDBService } from '../users/usersDB.service';
-import { CreateUserDTO } from '../users/dto/CreateUser.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from '../users/dto/CreateUser.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -25,6 +24,7 @@ export class AuthController {
   }
 
   @Post('signin')
+  @ApiOperation({ summary: 'Ingresar al sistema con email y contraseña' })
   @HttpCode(HttpStatus.OK)
   @UsePipes(new ValidationPipe({ transform: true }))
   signIn(@Body() signInDto: SignInDto) {
@@ -32,9 +32,10 @@ export class AuthController {
   }
 
   @Post('signup')
+  @ApiOperation({ summary: 'Dar de alta un usuario nuevo' })
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ transform: true }))
-  async createUser(@Body() createUserDTO: CreateUserDTO) {
-    return this.authsService.saveUser(createUserDTO);
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return this.authsService.saveUser(createUserDto);
   }
 }

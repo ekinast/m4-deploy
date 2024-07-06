@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './categories.entity';
 import { Repository } from 'typeorm';
@@ -31,7 +35,7 @@ export class CategoriesDBService {
     console.log('category.name', category.name);
 
     if (await this.categoryExists(category.name)) {
-      throw new NotFoundException(`La categoría ya existe: ${category.name}`);
+      throw new BadRequestException(`La categoría ya existe: ${category.name}`);
     }
     return this.categoriesRepository.save(category);
   }
@@ -43,7 +47,7 @@ export class CategoriesDBService {
     const oldCategory = await this.categoriesRepository.findOneBy({ id: id });
 
     if (!oldCategory) {
-      throw new NotFoundException(`Categoría con ID ${id} no encontrada`);
+      throw new BadRequestException(`Categoría con ID ${id} no encontrada`);
     }
     Object.assign(oldCategory, updatedCategoryData);
 
@@ -52,18 +56,18 @@ export class CategoriesDBService {
     return updatedCategory;
   }
 
-  async deleteCategory(id: string) {
-    const oldCategory = await this.categoriesRepository.findOneBy({
-      id: id,
-    });
+  // async deleteCategory(id: string) {
+  //   const oldCategory = await this.categoriesRepository.findOneBy({
+  //     id: id,
+  //   });
 
-    if (!oldCategory) {
-      throw new NotFoundException(`Categoría con ID ${id} no encontrada`);
-    }
-    const id_category = oldCategory.id;
-    await this.categoriesRepository.delete(id_category);
-    return 'Categoría eliminada correctamente';
-  }
+  //   if (!oldCategory) {
+  //     throw new NotFoundException(`Categoría con ID ${id} no encontrada`);
+  //   }
+  //   const id_category = oldCategory.id;
+  //   await this.categoriesRepository.delete(id_category);
+  //   return 'Categoría eliminada correctamente';
+  // }
 
   async createCategorySeeds(categories: Category[]): Promise<Category[]> {
     if (!categories || categories.length === 0) {

@@ -1,3 +1,4 @@
+import { CreateOrderDto } from './dto/CreateOrder.dto';
 import {
   BadRequestException,
   Injectable,
@@ -14,7 +15,6 @@ import { OrderDetail } from '../orders-detail/entities/orders-detail.entity';
 import { validateUser, validateProducts } from './orderValidation.service';
 import { UsersDBService } from '../users/usersDB.service';
 import { ProductsDBService } from '../products/productsDB.service';
-import { CreateOrderDto } from '../orders/dto/CreateOrder.dto';
 import { DataSource } from 'typeorm';
 
 type OrderResponse = {
@@ -107,9 +107,26 @@ export class OrdersService {
     };
   }
 
-  async findAll() {
-    return await this.ordersRepository.find({ relations: ['orderDetails'] });
-    //return await this.ordersRepository.find();
+  // async findAll() {
+  //   return await this.ordersRepository.find({ relations: ['orderDetails'] });
+  // }
+
+  async findAll(): Promise<Order[]> {
+    const orders = await this.ordersRepository.find({
+      relations: ['orderDetails'],
+    });
+    return orders.map((order) => this.convertToTimeZone(order));
+  }
+
+  private convertToTimeZone(order: Order): Order {
+    order.createdAt = this.toLocalTime(order.createdAt);
+    return order;
+  }
+
+  private toLocalTime(date: Date): Date {
+    const offset = -180; // Offset for Argentina Standard Time (UTC-3)
+    const localDate = new Date(date.getTime() + offset * 60000);
+    return localDate;
   }
 
   async findOne(id: string) {
