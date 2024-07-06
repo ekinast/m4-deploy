@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import {
   IsDate,
   IsEmail,
@@ -15,7 +15,7 @@ import {
 import { Transform } from 'class-transformer';
 import { addMinutes } from 'date-fns';
 
-export class CreateUserDTO {
+export class CreateUserDto {
   @IsNotEmpty({ message: 'El nombre es obligatorio y no puede estar vacío.' })
   @IsString({ message: 'El nombre debe ser una cadena de texto.' })
   @Length(3, 80, { message: 'El nombre debe tener entre 3 y 80 caracteres.' })
@@ -72,7 +72,7 @@ export class CreateUserDTO {
   phone?: number | undefined;
 
   @Length(5, 20, {
-    message: 'El nombre del país debe tener entre 3 y 80 caracteres.',
+    message: 'El nombre del país debe tener entre 5 y 20 caracteres.',
   })
   @ApiProperty({
     description: 'El nombre del país debe ser válido.',
@@ -89,7 +89,7 @@ export class CreateUserDTO {
     example: 'Calle Falsa 123',
     type: String,
   })
-  address: string;
+  address?: string;
 
   @Length(5, 20, {
     message: 'El nombre de la ciudad debe tener entre 5 y 20 caracteres.',
@@ -101,30 +101,35 @@ export class CreateUserDTO {
   })
   city: string;
 
+  @ApiHideProperty()
+  @IsEmpty()
+  isAdmin: boolean;
+
   @IsOptional()
   @IsDate({ message: 'createdAt debe ser una instancia de Date' })
-  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(
+    ({ value }) => {
+      if (value) {
+        return new Date(value);
+      }
+      return new Date();
+    },
+    { toClassOnly: true },
+  )
   @ApiProperty({
     description: 'La fecha de creación del usuario se genera automáticamente.',
     type: Date,
   })
   createdAt: Date;
 
-  @IsOptional()
-  @ApiProperty({
-    description: 'El rol del usuario se asigna automáticamente.',
-    type: Boolean,
-    default: false,
-  })
-  isAdmin: boolean;
-
-  constructor(createdAt?: Date) {
+  constructor(createdAt?: number) {
     this.createdAt = createdAt ? new Date(createdAt) : this.getLocalDate();
   }
 
   private getLocalDate(): Date {
     const now = new Date();
     const offsetInMinutes = now.getTimezoneOffset();
-    return addMinutes(now, -offsetInMinutes);
+    const fecha = addMinutes(now, -offsetInMinutes);
+    return fecha;
   }
 }

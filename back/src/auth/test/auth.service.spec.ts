@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../auth.service';
-import { CreateUserDTO } from '../../users/dto/CreateUser.dto';
+import { CreateUserDto } from '../../users/dto/CreateUser.dto';
 import { User } from '../../users/entities/users.entity';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
@@ -10,7 +10,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let mockAuthService: Partial<AuthService>;
 
-  const mockUser: Partial<CreateUserDTO> = {
+  const mockUser: Partial<CreateUserDto> = {
     name: 'Test User',
     email: 'test@mail.com',
     password: 'password',
@@ -19,22 +19,23 @@ describe('AuthService', () => {
     address: 'Test Address',
     city: 'Test City',
     createdAt: new Date(),
+    isAdmin: false,
   };
 
   beforeEach(async () => {
     mockAuthService = {
       signIn: () => Promise.resolve(undefined),
       saveUser: async (
-        createUserDTO: Omit<CreateUserDTO, 'IsAdmin'>,
-      ): Promise<Omit<CreateUserDTO, 'IsAdmin'> & User> => {
-        const hashedPassword = await bcrypt.hash(createUserDTO.password, 10);
+        CreateUserDto: Omit<CreateUserDto, 'IsAdmin'>,
+      ): Promise<Omit<CreateUserDto, 'IsAdmin'> & User> => {
+        const hashedPassword = await bcrypt.hash(CreateUserDto.password, 10);
         return {
-          ...createUserDTO,
+          ...CreateUserDto,
           IsAdmin: false,
           id: '1234fs-234sd-234sdf-234sdf',
           password: hashedPassword,
           orders: [],
-        } as Omit<CreateUserDTO, 'IsAdmin'> & User;
+        } as Omit<CreateUserDto, 'IsAdmin'> & User;
       },
     };
 
@@ -57,7 +58,7 @@ describe('AuthService', () => {
   });
 
   it('signups a new user with an encripted password', async () => {
-    const newUser = await authService.saveUser(mockUser as CreateUserDTO);
+    const newUser = await authService.saveUser(mockUser as CreateUserDto);
 
     expect(newUser).toBeDefined();
     expect(newUser.password).not.toEqual(mockUser.password);

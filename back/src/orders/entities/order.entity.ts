@@ -19,7 +19,11 @@ export class Order {
   @JoinColumn()
   user: User;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
+  })
   createdAt: Date;
 
   @OneToOne(() => OrderDetail, (orderDetail) => orderDetail.order, {

@@ -6,6 +6,8 @@ import { LoggerGlobal } from './middlewares/logger.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CreateOrderDto } from './orders/dto/CreateOrder.dto';
 import { ProductPartialDto } from './orders/dto/ProductPartial.dto';
+import { CategoriesSeed } from './seeds/categories/categories.seed';
+import { ProductsSeed } from './seeds/products/products.seed';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -75,6 +77,14 @@ async function bootstrap() {
   });
 
   SwaggerModule.setup('api', app, document);
+
+  const categoriesSeed = app.get(CategoriesSeed);
+  await categoriesSeed.seed();
+  console.log('La inserción de categorías ha terminado.');
+
+  const productsSeed = app.get(ProductsSeed);
+  await productsSeed.seed();
+  console.log('La inserción de productos ha terminado.');
 
   await app.listen(3000);
 }
