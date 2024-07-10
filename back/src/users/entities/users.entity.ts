@@ -1,6 +1,12 @@
 // Pourpase: Entity for the user table
 import { Order } from '../../orders/entities/order.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({
   name: 'users',
@@ -26,6 +32,9 @@ export class User {
 
   @Column()
   address?: string;
+
+  @CreateDateColumn()
+  birthday?: Date;
 
   @Column({ length: 50 })
   city?: string;
