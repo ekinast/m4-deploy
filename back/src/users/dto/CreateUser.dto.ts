@@ -91,6 +91,14 @@ export class CreateUserDto {
   })
   address?: string;
 
+  @ApiProperty({
+    description: 'La fecha de nacimiento del usuario debe ser válida.',
+    example: '1990-01-01',
+    type: Date,
+  })
+  @IsOptional()
+  birthday?: Date;
+
   @Length(5, 20, {
     message: 'El nombre de la ciudad debe tener entre 5 y 20 caracteres.',
   })
