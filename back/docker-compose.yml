@@ -28,6 +28,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     env_file:
       - .env.development
     networks:
